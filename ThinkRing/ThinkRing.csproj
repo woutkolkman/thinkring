@@ -36,6 +36,8 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Halo.cs" />
+    <Compile Include="HaloManager.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Hooks.cs" />
@@ -54,6 +56,9 @@
     </Reference>
     <Reference Include="MonoMod.Utils">
       <HintPath>..\..\references\MonoMod.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="MouseDrag">
+      <HintPath>..\..\MouseDrag\MouseDrag\bin\mousedrag\plugins\MouseDrag.dll</HintPath>
     </Reference>
     <Reference Include="PUBLIC-Assembly-CSharp">
       <HintPath>..\..\references\PUBLIC-Assembly-CSharp.dll</HintPath>

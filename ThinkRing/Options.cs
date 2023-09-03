@@ -17,7 +17,7 @@ namespace ThinkRing
 
         public override void Initialize()
         {
-            const float startHeight = 520f;
+            //const float startHeight = 520f;
 
             base.Initialize();
             Tabs = new OpTab[]
@@ -28,8 +28,8 @@ namespace ThinkRing
             /**************** General ****************/
             curTab = 0;
             AddTitle();
-            float x = 90;
-            float y = startHeight;
+            //float x = 90;
+            //float y = startHeight;
         }
 
 

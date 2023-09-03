@@ -12,6 +12,12 @@ namespace ThinkRing
         {
             //initialize options & load sprites
             On.RainWorld.OnModsInit += RainWorldOnModsInitHook;
+
+            //at tickrate
+            On.RainWorldGame.Update += RainWorldGameUpdateHook;
+
+            //at framerate
+            On.RainWorldGame.RawUpdate += RainWorldGameRawUpdateHook;
         }
 
 
@@ -20,6 +26,14 @@ namespace ThinkRing
         {
             orig(self);
             MachineConnector.SetRegisteredOI(Plugin.GUID, new Options());
+        }
+
+
+        //at tickrate
+        static void RainWorldGameUpdateHook(On.RainWorldGame.orig_Update orig, RainWorldGame self)
+        {
+            orig(self);
+            HaloManager.Update(self);
         }
 
 
