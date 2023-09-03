@@ -1,0 +1,11 @@
+{
+  "id": "maxi-mol-gruntonium.thinkring",
+  "name": "Think Ring",
+  "version": "0.1.0",
+  "authors": "Maxi Mol, eight golden coins",
+  "description": "Very nice.",
+  "requirements": ["maxi-mol.mousedrag"],
+  "requirements_names": ["Mouse Drag"],
+  "tags": ["Cosmetics"],
+  "checksum_override_version": false
+}
