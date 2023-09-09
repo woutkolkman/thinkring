@@ -74,7 +74,7 @@ namespace ThinkRing
             } else if (size < 1f) {
                 size += 1f / 40f; //gradually get larger (1s)
             }
-            size = Mathf.Clamp(size, 0f, 1f);
+            size = Mathf.Clamp(size, 0f, 1f); //keep size a value from 0f to 1f
 
             //============================================== Original Code ================================================
 
@@ -181,18 +181,18 @@ namespace ThinkRing
             {
                 sLeaser.sprites[this.firstSprite + i] = new FSprite("Futile_White", true);
                 sLeaser.sprites[this.firstSprite + i].shader = rCam.game.rainWorld.Shaders["VectorCircle"];
-                sLeaser.sprites[this.firstSprite + i].color = new Color(1f, 1f, 1f);
+                sLeaser.sprites[this.firstSprite + i].color = Options.haloColor.Value;
             }
             for (int j = 0; j < this.connections.Length; j++)
             {
                 sLeaser.sprites[this.firstSprite + 2 + j] = TriangleMesh.MakeLongMesh(20, false, false);
-                sLeaser.sprites[this.firstSprite + 2 + j].color = new Color(1f, 1f, 1f);
+                sLeaser.sprites[this.firstSprite + 2 + j].color = Options.haloColor.Value;
             }
             for (int k = 0; k < 100; k++)
             {
                 sLeaser.sprites[this.firstBitSprite + k] = new FSprite("pixel", true);
-                sLeaser.sprites[this.firstBitSprite + k].scaleX = 4f;
-                sLeaser.sprites[this.firstBitSprite + k].color = new Color(1f, 1f, 1f);
+                sLeaser.sprites[this.firstBitSprite + k].scaleX = 2f; //smaller width of bits, so they are visibly separated
+                sLeaser.sprites[this.firstBitSprite + k].color = Options.haloColor.Value;
             }
             this.AddToContainer(sLeaser, rCam, null);
         }
