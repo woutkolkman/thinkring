@@ -27,16 +27,12 @@
                 Plugin.Logger.LogDebug("Created new halo");
             }
 
-            if (MouseDrag.Drag.dragChunk != null && halo != null)
+            if (MouseDrag.Drag.dragChunk != null)
                 halo.connectionPos = MouseDrag.Drag.dragChunk.pos;
-
-            if (halo == null)
-                return;
 
             if (halo.slatedForDeletetion || halo.room != creature?.room) {
                 halo = null;
                 Plugin.Logger.LogDebug("Halo is destroyed");
-                return;
             }
         }
     }
