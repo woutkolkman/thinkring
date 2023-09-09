@@ -62,7 +62,9 @@ namespace ThinkRing
 
             //destroy and return if owner is deleted or moves to another room
             if (owner.owner?.owner?.slatedForDeletetion != false || 
-                this.room != owner.owner?.owner?.room) {
+                this.room != owner.owner?.owner?.room || 
+                (HaloManager.activeType == Options.ActivateTypes.Dragging && connectionPos == null)) //remove halo when not dragging
+            {
                 if (size > 0f) {
                     size -= 1f / 40f; //gradually get smaller (1s)
                 } else {

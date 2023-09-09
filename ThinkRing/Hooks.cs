@@ -18,6 +18,9 @@ namespace ThinkRing
 
             //at framerate
             On.RainWorldGame.RawUpdate += RainWorldGameRawUpdateHook;
+
+            //at new game
+            On.RainWorldGame.ctor += RainWorldGameCtorHook;
         }
 
 
@@ -41,6 +44,18 @@ namespace ThinkRing
         static void RainWorldGameRawUpdateHook(On.RainWorldGame.orig_RawUpdate orig, RainWorldGame self, float dt)
         {
             orig(self, dt);
+        }
+
+
+        //at new game
+        static void RainWorldGameCtorHook(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
+        {
+            orig(self, manager);
+
+            foreach (Options.ActivateTypes val in Enum.GetValues(typeof(Options.ActivateTypes)))
+                if (String.Equals(Options.activateType.Value, val.ToString()))
+                    HaloManager.activeType = val;
+            Plugin.Logger.LogDebug("RainWorldGameCtorHook, activeType: " + HaloManager.activeType.ToString());
         }
     }
 }
