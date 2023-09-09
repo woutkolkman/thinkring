@@ -27,7 +27,7 @@ namespace ThinkRing
         public bool visibility = true;
         public bool suppressConnectionFires = false;
         public float noiseSuppress = 0f;
-        public float averageVoice = 0f; //determines size
+        public float size = 0f;
         public Vector2? connectionPos = null; //if not null, connections will fire
         public float boltFireChance = 0.6f;
 
@@ -63,19 +63,18 @@ namespace ThinkRing
             //destroy and return if owner is deleted or moves to another room
             if (owner.owner?.owner?.slatedForDeletetion != false || 
                 this.room != owner.owner?.owner?.room) {
-                if (averageVoice > 0f) {
-                    averageVoice -= 1f / 40f; //gradually get smaller (1s)
-                    Plugin.Logger.LogDebug(averageVoice);
+                if (size > 0f) {
+                    size -= 1f / 40f; //gradually get smaller (1s)
                 } else {
                     this.Destroy();
                     this.visibility = false;
                     this.RemoveFromRoom();
                     return;
                 }
-            } else if (averageVoice < 1f) {
-                averageVoice += 1f / 40f; //gradually get larger (1s)
-                Plugin.Logger.LogDebug(averageVoice);
+            } else if (size < 1f) {
+                size += 1f / 40f; //gradually get larger (1s)
             }
+            size = Mathf.Clamp(size, 0f, 1f);
 
             //============================================== Original Code ================================================
 
@@ -109,7 +108,7 @@ namespace ThinkRing
                         this.ringRotations[j, 0] = this.ringRotations[j, 3];
                     }
                 }
-                else if (UnityEngine.Random.value < 0.033333335f)
+                else if (UnityEngine.Random.value < 1f/30f)
                 {
                     this.ringRotations[j, 3] = this.ringRotations[j, 0] + ((UnityEngine.Random.value < 0.5f) ? -1f : 1f) * Mathf.Lerp(15f, 150f, UnityEngine.Random.value);
                 }
@@ -117,7 +116,7 @@ namespace ThinkRing
             for (int k = 0; k < this.bits.Length; k++)
                 for (int l = 0; l < this.bits[k].Length; l++)
                     this.bits[k][l].Update();
-            if (UnityEngine.Random.value < 0.016666668f && this.bits.Length != 0)
+            if (UnityEngine.Random.value < 1f/60f && this.bits.Length != 0)
             {
                 int num = UnityEngine.Random.Range(0, this.bits.Length);
                 for (int m = 0; m < this.bits[num].Length; m++)
@@ -158,7 +157,7 @@ namespace ThinkRing
 
         public float Radius(float ring, float timeStacker)
         {
-            return (3f + ring + Mathf.Lerp(this.lastPush, this.push, timeStacker) - 0.5f * averageVoice) * Mathf.Lerp(this.lastExpand, this.expand, timeStacker) * 7f;
+            return (3f + ring + Mathf.Lerp(this.lastPush, this.push, timeStacker) - 0.5f * size) * Mathf.Lerp(this.lastExpand, this.expand, timeStacker) * 7f;
         }
 
 
@@ -213,7 +212,7 @@ namespace ThinkRing
             {
                 sLeaser.sprites[this.firstSprite + k].x = vector.x - camPos.x;
                 sLeaser.sprites[this.firstSprite + k].y = vector.y - camPos.y;
-                sLeaser.sprites[this.firstSprite + k].scale = this.Radius((float)k, timeStacker) / 8f;
+                sLeaser.sprites[this.firstSprite + k].scale = this.Radius((float)k, timeStacker) / 8f * size; //added size
             }
             sLeaser.sprites[this.firstSprite].alpha = Mathf.Lerp(3f / this.Radius(0f, timeStacker), 1f, Mathf.Lerp(this.lastWhite, this.white, timeStacker));
             sLeaser.sprites[this.firstSprite + 1].alpha = 3f / this.Radius(1f, timeStacker);
@@ -245,12 +244,12 @@ namespace ThinkRing
                 for (int num2 = 0; num2 < this.bits[n].Length; num2++)
                 {
                     float num3 = (float)num2 / (float)this.bits[n].Length * 360f + this.Rotation(n, timeStacker);
-                    Vector2 vector5 = vector + Custom.DegToVec(num3) * this.Radius((float)n + 0.5f, timeStacker);
+                    Vector2 vector5 = vector + Custom.DegToVec(num3) * this.Radius((float)n + 0.5f, timeStacker) * size; //added size
                     sLeaser.sprites[spriteNum].scaleY = 8f * this.bits[n][num2].Fill(timeStacker);
                     sLeaser.sprites[spriteNum].x = vector5.x - camPos.x;
                     sLeaser.sprites[spriteNum].y = vector5.y - camPos.y;
                     sLeaser.sprites[spriteNum].rotation = num3;
-//                    sLeaser.sprites[spriteNum].alpha = 1f; //added so sprites are visible
+                    sLeaser.sprites[spriteNum].alpha = 1f; //added for future tweaking
                     spriteNum++;
                 }
             }
