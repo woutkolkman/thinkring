@@ -87,7 +87,7 @@ namespace ThinkRing
                 this.connections[i].lightUp *= 0.9f;
                 if (UnityEngine.Random.value < connectionsFireChance / 40f && visibility && connectionPos.HasValue)
                 {
-                    this.connections[i].SetStuckAt(connectionPos.Value); //added this line to connect bolt to grabbed object
+                    this.connections[i].SetStuckAt(connectionPos.Value); //added to connect bolt to grabbed object
                     this.connections[i].lightUp = 1f;
                     this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1f * (1f - noiseSuppress)), 1f);
                 }
@@ -220,6 +220,9 @@ namespace ThinkRing
             {
                 if (this.connections[l].lastLightUp > 0.05f || this.connections[l].lightUp > 0.05f)
                 {
+                    if (connectionPos.HasValue)
+                        this.connections[l].SetStuckAt(connectionPos.Value, false); //added to track grabbed object
+
                     Vector2 vector2 = this.connections[l].stuckAt;
                     float d = 2f * Mathf.Lerp(this.connections[l].lastLightUp, this.connections[l].lightUp, timeStacker);
                     for (int m = 0; m < 20; m++)
@@ -235,7 +238,10 @@ namespace ThinkRing
                         (sLeaser.sprites[this.firstSprite + 2 + l] as TriangleMesh).MoveVertice(m * 4 + 2, vector3 - a2 * d - camPos);
                         (sLeaser.sprites[this.firstSprite + 2 + l] as TriangleMesh).MoveVertice(m * 4 + 3, vector3 + a2 * d - camPos);
                         vector2 = vector3;
+                        sLeaser.sprites[this.firstSprite + 2 + l].isVisible = true; //added to show connection
                     }
+                } else { //added to hide connection once struck
+                    sLeaser.sprites[this.firstSprite + 2 + l].isVisible = false;
                 }
             }
             int spriteNum = this.firstBitSprite;
@@ -287,13 +293,14 @@ namespace ThinkRing
 
 
             //edited Connection ctor to set stuckAt value at a later time
-            public void SetStuckAt(Vector2 stuckAt)
+            public void SetStuckAt(Vector2 stuckAt, bool newHandle = true)
             {
                 Vector2 vector = stuckAt;
                 vector.x = Mathf.Clamp(vector.x, stuckAt.x - 20f, stuckAt.x + 20f); //TODO stuckAt value in a radius around position?
                 vector.y = Mathf.Clamp(vector.y, stuckAt.y - 20f, stuckAt.y + 20f);
                 this.stuckAt = Vector2.Lerp(stuckAt, vector, 0.5f);
-                this.handle = stuckAt + Custom.RNV() * Mathf.Lerp(400f, 700f, UnityEngine.Random.value);
+                if (newHandle) //added optional newhandle
+                    this.handle = stuckAt + Custom.RNV() * Mathf.Lerp(400f, 700f, UnityEngine.Random.value);
             }
         }
 

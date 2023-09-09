@@ -25,7 +25,6 @@ namespace ThinkRing
                 return;
             }
             if (halo.slatedForDeletetion || creature?.room != halo.owner?.owner?.owner?.room) {
-                halo.RemoveFromRoom();
                 halo = null;
                 Plugin.Logger.LogDebug("Halo is destroyed");
             }
