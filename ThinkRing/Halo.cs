@@ -60,11 +60,24 @@ namespace ThinkRing
         {
             base.Update(eu);
 
-            /*//destroy and return if owner is deleted
-            if (owner?.owner == null || owner.owner.slatedForDeletetion) {
-                this.Destroy();
-                return;
-            }*/
+            //destroy and return if owner is deleted or moves to another room
+            if (owner.owner?.owner?.slatedForDeletetion != false || 
+                this.room != owner.owner?.owner?.room) {
+                if (averageVoice > 0f) {
+                    averageVoice -= 1f / 40f; //gradually get smaller (1s)
+                    Plugin.Logger.LogDebug(averageVoice);
+                } else {
+                    this.Destroy();
+                    this.visibility = false;
+                    this.RemoveFromRoom();
+                    return;
+                }
+            } else if (averageVoice < 1f) {
+                averageVoice += 1f / 40f; //gradually get larger (1s)
+                Plugin.Logger.LogDebug(averageVoice);
+            }
+
+            //============================================== Original Code ================================================
 
             //edited connectionsFireChance
             float connectionsFireChance = suppressConnectionFires ? 0f : boltFireChance;
@@ -145,7 +158,7 @@ namespace ThinkRing
 
         public float Radius(float ring, float timeStacker)
         {
-            return (3f + ring + Mathf.Lerp(this.lastPush, this.push, timeStacker) - 0.5f * averageVoice) * Mathf.Lerp(this.lastExpand, this.expand, timeStacker) * 10f;
+            return (3f + ring + Mathf.Lerp(this.lastPush, this.push, timeStacker) - 0.5f * averageVoice) * Mathf.Lerp(this.lastExpand, this.expand, timeStacker) * 7f;
         }
 
 

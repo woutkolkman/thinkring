@@ -5,14 +5,13 @@ namespace ThinkRing
     public static class HaloManager
     {
         public static Halo halo;
-        public static Creature creature;
 
 
         public static void Update(RainWorldGame game)
         {
-            if (halo == null) {
-                creature = game?.FirstAlivePlayer?.realizedCreature;
+            Creature creature = game?.FirstAlivePlayer?.realizedCreature;
 
+            if (halo == null) {
                 if (!(creature is Player) || creature.room == null || creature.slatedForDeletetion)
                     return;
 
@@ -25,34 +24,11 @@ namespace ThinkRing
                 Plugin.Logger.LogDebug("Created new halo");
                 return;
             }
-
-            if (creature != game?.FirstAlivePlayer?.realizedCreature || creature.slatedForDeletetion) {
+            if (halo.slatedForDeletetion || creature?.room != halo.owner?.owner?.owner?.room) {
                 halo.RemoveFromRoom();
-                halo.Destroy();
                 halo = null;
-                Plugin.Logger.LogDebug("Destroyed halo");
-                return;
+                Plugin.Logger.LogDebug("Halo is destroyed");
             }
-
-            if (halo.room != creature.room && creature.room != null) {
-                halo.RemoveFromRoom();
-                creature.room.AddObject(halo);
-            }
-
-            /*
-            if (creature == null || creature.slatedForDeletetion || halo.room != creature.room) {
-                halo.averageVoice--;
-//                Plugin.Logger.LogDebug("halo.averageVoice: " + halo.averageVoice);
-                if (halo.averageVoice <= 0f) {
-                    halo.RemoveFromRoom();
-                    halo.Destroy();
-                    halo = null;
-//                    Plugin.Logger.LogDebug("Deleted halo");
-                }
-            } else {
-                if (halo.averageVoice < 20f)
-                    halo.averageVoice++;
-            }*/
 
             if (MouseDrag.Drag.dragChunk != null)
                 halo.connectionPos = MouseDrag.Drag.dragChunk.pos;
