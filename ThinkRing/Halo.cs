@@ -27,9 +27,9 @@ namespace ThinkRing
         public bool visibility = true;
         public bool suppressConnectionFires = false;
         public float noiseSuppress = 0f;
-        public float averageVoice = 0f; //determines size
+        public float size = 0f;
         public Vector2? connectionPos = null; //if not null, connections will fire
-        public float boltFireChance = 0.6f;
+        public float boltFireChance = 0.4f;
 
 
         public Halo(GenericBodyPart owner)
@@ -60,11 +60,25 @@ namespace ThinkRing
         {
             base.Update(eu);
 
-            /*//destroy and return if owner is deleted
-            if (owner?.owner == null || owner.owner.slatedForDeletetion) {
-                this.Destroy();
-                return;
-            }*/
+            //destroy and return if owner is deleted or moves to another room
+            if (owner.owner?.owner?.slatedForDeletetion != false || 
+                this.room != owner.owner?.owner?.room || 
+                (HaloManager.activeType == Options.ActivateTypes.Dragging && connectionPos == null)) //remove halo when not dragging
+            {
+                if (size > 0f) {
+                    size -= 1f / 40f; //gradually get smaller (1s)
+                } else {
+                    this.Destroy();
+                    this.visibility = false;
+                    this.RemoveFromRoom();
+                    return;
+                }
+            } else if (size < 1f) {
+                size += 1f / 40f; //gradually get larger (1s)
+            }
+            size = Mathf.Clamp(size, 0f, 1f); //keep size a value from 0f to 1f
+
+            //============================================== Original Code ================================================
 
             //edited connectionsFireChance
             float connectionsFireChance = suppressConnectionFires ? 0f : boltFireChance;
@@ -75,7 +89,7 @@ namespace ThinkRing
                 this.connections[i].lightUp *= 0.9f;
                 if (UnityEngine.Random.value < connectionsFireChance / 40f && visibility && connectionPos.HasValue)
                 {
-                    this.connections[i].SetStuckAt(connectionPos.Value); //added this line to connect bolt to grabbed object
+                    this.connections[i].SetStuckAt(connectionPos.Value); //added to connect bolt to grabbed object
                     this.connections[i].lightUp = 1f;
                     this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1f * (1f - noiseSuppress)), 1f);
                 }
@@ -96,7 +110,7 @@ namespace ThinkRing
                         this.ringRotations[j, 0] = this.ringRotations[j, 3];
                     }
                 }
-                else if (UnityEngine.Random.value < 0.033333335f)
+                else if (UnityEngine.Random.value < 1f/30f)
                 {
                     this.ringRotations[j, 3] = this.ringRotations[j, 0] + ((UnityEngine.Random.value < 0.5f) ? -1f : 1f) * Mathf.Lerp(15f, 150f, UnityEngine.Random.value);
                 }
@@ -104,7 +118,7 @@ namespace ThinkRing
             for (int k = 0; k < this.bits.Length; k++)
                 for (int l = 0; l < this.bits[k].Length; l++)
                     this.bits[k][l].Update();
-            if (UnityEngine.Random.value < 0.016666668f && this.bits.Length != 0)
+            if (UnityEngine.Random.value < 1f/60f && this.bits.Length != 0)
             {
                 int num = UnityEngine.Random.Range(0, this.bits.Length);
                 for (int m = 0; m < this.bits[num].Length; m++)
@@ -145,7 +159,7 @@ namespace ThinkRing
 
         public float Radius(float ring, float timeStacker)
         {
-            return (3f + ring + Mathf.Lerp(this.lastPush, this.push, timeStacker) - 0.5f * averageVoice) * Mathf.Lerp(this.lastExpand, this.expand, timeStacker) * 10f;
+            return (3f + ring + Mathf.Lerp(this.lastPush, this.push, timeStacker) - 0.5f * size) * Mathf.Lerp(this.lastExpand, this.expand, timeStacker) * 7f;
         }
 
 
@@ -169,18 +183,18 @@ namespace ThinkRing
             {
                 sLeaser.sprites[this.firstSprite + i] = new FSprite("Futile_White", true);
                 sLeaser.sprites[this.firstSprite + i].shader = rCam.game.rainWorld.Shaders["VectorCircle"];
-                sLeaser.sprites[this.firstSprite + i].color = new Color(1f, 1f, 1f);
+                sLeaser.sprites[this.firstSprite + i].color = Options.haloColor.Value;
             }
             for (int j = 0; j < this.connections.Length; j++)
             {
                 sLeaser.sprites[this.firstSprite + 2 + j] = TriangleMesh.MakeLongMesh(20, false, false);
-                sLeaser.sprites[this.firstSprite + 2 + j].color = new Color(1f, 1f, 1f);
+                sLeaser.sprites[this.firstSprite + 2 + j].color = Options.haloColor.Value;
             }
             for (int k = 0; k < 100; k++)
             {
                 sLeaser.sprites[this.firstBitSprite + k] = new FSprite("pixel", true);
-                sLeaser.sprites[this.firstBitSprite + k].scaleX = 4f;
-                sLeaser.sprites[this.firstBitSprite + k].color = new Color(1f, 1f, 1f);
+                sLeaser.sprites[this.firstBitSprite + k].scaleX = 2f; //smaller width of bits, so they are visibly separated
+                sLeaser.sprites[this.firstBitSprite + k].color = Options.haloColor.Value;
             }
             this.AddToContainer(sLeaser, rCam, null);
         }
@@ -200,7 +214,7 @@ namespace ThinkRing
             {
                 sLeaser.sprites[this.firstSprite + k].x = vector.x - camPos.x;
                 sLeaser.sprites[this.firstSprite + k].y = vector.y - camPos.y;
-                sLeaser.sprites[this.firstSprite + k].scale = this.Radius((float)k, timeStacker) / 8f;
+                sLeaser.sprites[this.firstSprite + k].scale = this.Radius((float)k, timeStacker) / 8f * size; //added size
             }
             sLeaser.sprites[this.firstSprite].alpha = Mathf.Lerp(3f / this.Radius(0f, timeStacker), 1f, Mathf.Lerp(this.lastWhite, this.white, timeStacker));
             sLeaser.sprites[this.firstSprite + 1].alpha = 3f / this.Radius(1f, timeStacker);
@@ -208,6 +222,9 @@ namespace ThinkRing
             {
                 if (this.connections[l].lastLightUp > 0.05f || this.connections[l].lightUp > 0.05f)
                 {
+                    if (connectionPos.HasValue)
+                        this.connections[l].SetStuckAt(connectionPos.Value, false); //added to track grabbed object
+
                     Vector2 vector2 = this.connections[l].stuckAt;
                     float d = 2f * Mathf.Lerp(this.connections[l].lastLightUp, this.connections[l].lightUp, timeStacker);
                     for (int m = 0; m < 20; m++)
@@ -223,7 +240,10 @@ namespace ThinkRing
                         (sLeaser.sprites[this.firstSprite + 2 + l] as TriangleMesh).MoveVertice(m * 4 + 2, vector3 - a2 * d - camPos);
                         (sLeaser.sprites[this.firstSprite + 2 + l] as TriangleMesh).MoveVertice(m * 4 + 3, vector3 + a2 * d - camPos);
                         vector2 = vector3;
+                        sLeaser.sprites[this.firstSprite + 2 + l].isVisible = true; //added to show connection
                     }
+                } else { //added to hide connection once struck
+                    sLeaser.sprites[this.firstSprite + 2 + l].isVisible = false;
                 }
             }
             int spriteNum = this.firstBitSprite;
@@ -232,12 +252,12 @@ namespace ThinkRing
                 for (int num2 = 0; num2 < this.bits[n].Length; num2++)
                 {
                     float num3 = (float)num2 / (float)this.bits[n].Length * 360f + this.Rotation(n, timeStacker);
-                    Vector2 vector5 = vector + Custom.DegToVec(num3) * this.Radius((float)n + 0.5f, timeStacker);
+                    Vector2 vector5 = vector + Custom.DegToVec(num3) * this.Radius((float)n + 0.5f, timeStacker) * size; //added size
                     sLeaser.sprites[spriteNum].scaleY = 8f * this.bits[n][num2].Fill(timeStacker);
                     sLeaser.sprites[spriteNum].x = vector5.x - camPos.x;
                     sLeaser.sprites[spriteNum].y = vector5.y - camPos.y;
                     sLeaser.sprites[spriteNum].rotation = num3;
-//                    sLeaser.sprites[spriteNum].alpha = 1f; //added so sprites are visible
+                    sLeaser.sprites[spriteNum].alpha = 1f; //added for future tweaking
                     spriteNum++;
                 }
             }
@@ -275,13 +295,14 @@ namespace ThinkRing
 
 
             //edited Connection ctor to set stuckAt value at a later time
-            public void SetStuckAt(Vector2 stuckAt)
+            public void SetStuckAt(Vector2 stuckAt, bool newHandle = true)
             {
                 Vector2 vector = stuckAt;
                 vector.x = Mathf.Clamp(vector.x, stuckAt.x - 20f, stuckAt.x + 20f); //TODO stuckAt value in a radius around position?
                 vector.y = Mathf.Clamp(vector.y, stuckAt.y - 20f, stuckAt.y + 20f);
                 this.stuckAt = Vector2.Lerp(stuckAt, vector, 0.5f);
-                this.handle = stuckAt + Custom.RNV() * Mathf.Lerp(400f, 700f, UnityEngine.Random.value);
+                if (newHandle) //added optional newhandle
+                    this.handle = stuckAt + Custom.RNV() * Mathf.Lerp(400f, 700f, UnityEngine.Random.value);
             }
         }
 

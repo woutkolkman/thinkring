@@ -6,18 +6,27 @@ namespace ThinkRing
 {
     public class Options : OptionInterface
     {
+        public static Configurable<string> activateType;
+        public static Configurable<Color> haloColor;
         public int curTab;
+
+        public enum ActivateTypes
+        {
+            Dragging,
+            Always
+        }
 
 
         public Options()
         {
-
+            activateType = config.Bind("activateType", defaultValue: ActivateTypes.Dragging.ToString(), new ConfigurableInfo("Halo is visible on this condition.", null, "", "Show when"));
+            haloColor = config.Bind("haloColor", defaultValue: new Color(0.19607843f, 0f, 0.19607843f, 1f), new ConfigurableInfo("Configured static color for halo.", null, "", ""));
         }
 
 
         public override void Initialize()
         {
-            //const float startHeight = 520f;
+            const float startHeight = 520f;
 
             base.Initialize();
             Tabs = new OpTab[]
@@ -28,8 +37,10 @@ namespace ThinkRing
             /**************** General ****************/
             curTab = 0;
             AddTitle();
-            //float x = 90;
-            //float y = startHeight;
+            float x = 100f;
+            float y = startHeight;
+            AddComboBox(activateType, new Vector2(x, y - 27f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 100f);
+            AddColorPicker(haloColor, new Vector2(225f, y -= 150f));
         }
 
 
@@ -136,6 +147,20 @@ namespace ThinkRing
             {
                 box,
                 label
+            });
+        }
+
+
+        private void AddColorPicker(Configurable<Color> option, Vector2 pos)
+        {
+            OpColorPicker colorPicker = new OpColorPicker(option, pos)
+            {
+                description = option.info.description
+            };
+
+            Tabs[curTab].AddItems(new UIelement[]
+            {
+                colorPicker
             });
         }
     }
