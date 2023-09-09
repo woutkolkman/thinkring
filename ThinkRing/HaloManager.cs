@@ -24,7 +24,8 @@ namespace ThinkRing
                 Plugin.Logger.LogDebug("Created new halo");
                 return;
             }
-            if (halo.slatedForDeletetion || creature?.room != halo.owner?.owner?.owner?.room) {
+
+            if (halo.slatedForDeletetion || halo.room != creature?.room) {
                 halo = null;
                 Plugin.Logger.LogDebug("Halo is destroyed");
             }

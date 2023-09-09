@@ -29,7 +29,7 @@ namespace ThinkRing
         public float noiseSuppress = 0f;
         public float size = 0f;
         public Vector2? connectionPos = null; //if not null, connections will fire
-        public float boltFireChance = 0.6f;
+        public float boltFireChance = 0.4f;
 
 
         public Halo(GenericBodyPart owner)
