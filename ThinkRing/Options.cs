@@ -23,7 +23,8 @@ namespace ThinkRing
         {
             Static,
             CharacterDarker,
-            Character
+            Character,
+            RGB1
         }
 
 

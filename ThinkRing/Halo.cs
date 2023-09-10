@@ -65,6 +65,8 @@ namespace ThinkRing
             }
             if (HaloManager.colorType == Options.ColorTypes.Character && owner?.owner is PlayerGraphics)
                 color = PlayerGraphics.SlugcatColor((owner.owner as PlayerGraphics).CharacterForColor);
+            if (HaloManager.colorType == Options.ColorTypes.RGB1)
+                color = Color.red; //start color
         }
 
 
@@ -216,6 +218,15 @@ namespace ThinkRing
 
         public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
+            //rgb cycle color type
+            if (HaloManager.colorType == Options.ColorTypes.RGB1) {
+                Vector3 HSL = Custom.RGB2HSL(color);
+                HSL.x += 0.002f;
+                if (HSL.x > 1f)
+                    HSL.x = 0f;
+                color = Custom.HSL2RGB(HSL.x, HSL.y, HSL.z);
+            }
+
             if (sLeaser.sprites[this.firstSprite].isVisible != visibility)
             {
                 for (int i = 0; i < 2 + this.connections.Length; i++)
@@ -229,6 +240,7 @@ namespace ThinkRing
                 sLeaser.sprites[this.firstSprite + k].x = vector.x - camPos.x;
                 sLeaser.sprites[this.firstSprite + k].y = vector.y - camPos.y;
                 sLeaser.sprites[this.firstSprite + k].scale = this.Radius((float)k, timeStacker) / 8f * size; //added size
+                sLeaser.sprites[this.firstSprite + k].color = color; //added color assignment
             }
             sLeaser.sprites[this.firstSprite].alpha = Mathf.Lerp(3f / this.Radius(0f, timeStacker), 1f, Mathf.Lerp(this.lastWhite, this.white, timeStacker));
             sLeaser.sprites[this.firstSprite + 1].alpha = 3f / this.Radius(1f, timeStacker);
@@ -255,6 +267,7 @@ namespace ThinkRing
                         (sLeaser.sprites[this.firstSprite + 2 + l] as TriangleMesh).MoveVertice(m * 4 + 3, vector3 + a2 * d - camPos);
                         vector2 = vector3;
                         sLeaser.sprites[this.firstSprite + 2 + l].isVisible = true; //added to show connection
+                        sLeaser.sprites[this.firstSprite + 2 + l].color = Options.whiteLightning.Value ? Color.white : color; //added color assignment
                     }
                 } else { //added to hide connection once struck
                     sLeaser.sprites[this.firstSprite + 2 + l].isVisible = false;
@@ -271,7 +284,7 @@ namespace ThinkRing
                     sLeaser.sprites[spriteNum].x = vector5.x - camPos.x;
                     sLeaser.sprites[spriteNum].y = vector5.y - camPos.y;
                     sLeaser.sprites[spriteNum].rotation = num3;
-                    sLeaser.sprites[spriteNum].alpha = 1f; //added for future tweaking
+                    sLeaser.sprites[spriteNum].color = color; //added color assignment
                     spriteNum++;
                 }
             }
