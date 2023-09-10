@@ -234,11 +234,11 @@ namespace ThinkRing
                 for (int j = 0; j < 100; j++)
                     sLeaser.sprites[this.firstBitSprite + j].isVisible = visibility;
             }
-            Vector2 vector = this.Center(timeStacker);
+            Vector2 center = this.Center(timeStacker);
             for (int k = 0; k < 2; k++)
             {
-                sLeaser.sprites[this.firstSprite + k].x = vector.x - camPos.x;
-                sLeaser.sprites[this.firstSprite + k].y = vector.y - camPos.y;
+                sLeaser.sprites[this.firstSprite + k].x = center.x - camPos.x;
+                sLeaser.sprites[this.firstSprite + k].y = center.y - camPos.y;
                 sLeaser.sprites[this.firstSprite + k].scale = this.Radius((float)k, timeStacker) / 8f * size; //added size
                 sLeaser.sprites[this.firstSprite + k].color = color; //added color assignment
             }
@@ -256,8 +256,8 @@ namespace ThinkRing
                     for (int m = 0; m < 20; m++)
                     {
                         float f = (float)m / 19f;
-                        Vector2 a = Custom.DirVec(vector, this.connections[l].stuckAt);
-                        Vector2 vector3 = Custom.Bezier(this.connections[l].stuckAt, this.connections[l].handle, vector + a * this.Radius(2f, timeStacker), vector + a * 400f, f);
+                        Vector2 a = Custom.DirVec(center, this.connections[l].stuckAt);
+                        Vector2 vector3 = Custom.Bezier(this.connections[l].stuckAt, this.connections[l].handle, center + a * this.Radius(2f, timeStacker) * size, center + a * 400f, f);
                         Vector2 vector4 = Custom.DirVec(vector2, vector3);
                         Vector2 a2 = Custom.PerpendicularVector(vector4);
                         float d2 = Vector2.Distance(vector2, vector3);
@@ -279,7 +279,7 @@ namespace ThinkRing
                 for (int num2 = 0; num2 < this.bits[n].Length; num2++)
                 {
                     float num3 = (float)num2 / (float)this.bits[n].Length * 360f + this.Rotation(n, timeStacker);
-                    Vector2 vector5 = vector + Custom.DegToVec(num3) * this.Radius((float)n + 0.5f, timeStacker) * size; //added size
+                    Vector2 vector5 = center + Custom.DegToVec(num3) * this.Radius((float)n + 0.5f, timeStacker) * size; //added size
                     sLeaser.sprites[spriteNum].scaleY = 8f * this.bits[n][num2].Fill(timeStacker);
                     sLeaser.sprites[spriteNum].x = vector5.x - camPos.x;
                     sLeaser.sprites[spriteNum].y = vector5.y - camPos.y;
