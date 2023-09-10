@@ -105,9 +105,21 @@ namespace ThinkRing
                 this.connections[i].lightUp *= 0.9f;
                 if (UnityEngine.Random.value < connectionsFireChance / 40f && visibility && connectionPos.HasValue)
                 {
-                    this.connections[i].SetStuckAt(connectionPos.Value); //added to connect bolt to grabbed object
-                    this.connections[i].lightUp = 1f;
-                    this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1f * (1f - noiseSuppress)), 1f);
+                    if (HaloManager.lightningType == Options.LightningTypes.OracleHalo) {
+                        this.connections[i].SetStuckAt(connectionPos.Value); //added to connect bolt to grabbed object
+                        this.connections[i].lightUp = 1f;
+                        this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1.5f * (1.5f - noiseSuppress)), 1f);
+                    }
+                    if (HaloManager.lightningType == Options.LightningTypes.LightningBolt)
+                    {
+                        LightningBolt obj = new LightningBolt(
+                            Center(0f) + Custom.DegToVec(Random.value * 360f) * Radius(2f, 0f) * size, 
+                            connectionPos.Value + Random.insideUnitCircle * 5f, Random.Range(0.3f, 0.1f), 
+                            Options.whiteLightning.Value ? Color.white : color, color
+                        );
+                        room.AddObject(obj);
+                        room.PlaySound(SoundID.Death_Lightning_Spark_Spontaneous, 0f, (0.7f * (0.7f - noiseSuppress)), 1f);
+                    }
                 }
             }
             connectionPos = null; //reset connectionPos

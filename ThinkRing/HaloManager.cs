@@ -5,6 +5,7 @@
         public static Halo halo;
         public static Options.ActivateTypes activeType = Options.ActivateTypes.Dragging;
         public static Options.ColorTypes colorType = Options.ColorTypes.Static;
+        public static Options.LightningTypes lightningType = Options.LightningTypes.LightningBolt;
 
 
         public static void Update(RainWorldGame game)
@@ -29,7 +30,6 @@
 
                 halo = new Halo(head);
                 creature.room.AddObject(halo);
-                Plugin.Logger.LogDebug("Created new halo");
             }
 
             if (MouseDrag.Drag.dragChunk != null) {
@@ -39,7 +39,6 @@
 
             if (halo.slatedForDeletetion || halo.room != creature?.room) {
                 halo = null;
-                Plugin.Logger.LogDebug("Halo is destroyed");
             }
         }
     }
