@@ -32,8 +32,10 @@
                 Plugin.Logger.LogDebug("Created new halo");
             }
 
-            if (MouseDrag.Drag.dragChunk != null)
+            if (MouseDrag.Drag.dragChunk != null) {
                 halo.connectionPos = MouseDrag.Drag.dragChunk.pos;
+                (creature as Player)?.Blink(30);
+            }
 
             if (halo.slatedForDeletetion || halo.room != creature?.room) {
                 halo = null;
