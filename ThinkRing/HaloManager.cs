@@ -36,6 +36,7 @@
                 halo.connectionPos = MouseDrag.Drag.dragChunk.pos;
                 (creature as Player)?.Blink(30);
             }
+            halo.randomBoltPositions = MouseDrag.Drag.dragChunk?.owner == creature;
 
             if (halo.slatedForDeletetion || halo.room != creature?.room) {
                 halo = null;

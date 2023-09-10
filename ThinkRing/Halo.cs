@@ -29,9 +29,10 @@ namespace ThinkRing
         public float noiseSuppress = 0f;
         public float size = 0f;
         public Vector2? connectionPos = null; //if not null, connections will fire
-        public float boltFireChance = 0.4f;
+        public float boltFireChance = 0.3f;
         public int boltFireCounter = 0; //alternative to boltFireChance, a constant counter for bolt fires
         public Color color = Color.white;
+        public bool randomBoltPositions = false;
 
 
         public Halo(GenericBodyPart owner)
@@ -107,10 +108,13 @@ namespace ThinkRing
             {
                 this.connections[i].lastLightUp = this.connections[i].lightUp;
                 this.connections[i].lightUp *= 0.9f;
-                if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) && visibility && connectionPos.HasValue)
+                if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) 
+                    && visibility && connectionPos.HasValue)
                 {
+                    Vector2 target = randomBoltPositions ? Center(0f) + Custom.RNV() * 250f * Random.Range(0.3f, 1f) : connectionPos.Value;
+
                     if (HaloManager.lightningType == Options.LightningTypes.OracleHalo) {
-                        this.connections[i].SetStuckAt(connectionPos.Value); //added to connect bolt to grabbed object
+                        this.connections[i].SetStuckAt(target); //added to connect bolt to grabbed object
                         this.connections[i].lightUp = 1f;
                         this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1.5f * (1.5f - noiseSuppress)), 1f);
                     }
@@ -118,7 +122,7 @@ namespace ThinkRing
                     {
                         LightningBolt obj = new LightningBolt(
                             Center(0f) + Custom.DegToVec(Random.value * 360f) * Radius(2f, 0f) * size, 
-                            connectionPos.Value + Random.insideUnitCircle * 5f, Random.Range(0.3f, 0.1f), 
+                            target + Random.insideUnitCircle * 5f, Random.Range(0.3f, 0.1f), 
                             Options.whiteLightning.Value ? Color.white : color, color
                         );
                         room.AddObject(obj);
@@ -265,7 +269,7 @@ namespace ThinkRing
             {
                 if ((this.connections[l].lastLightUp > 0.05f || this.connections[l].lightUp > 0.05f) && visibility)
                 {
-                    if (connectionPos.HasValue)
+                    if (connectionPos.HasValue && !randomBoltPositions)
                         this.connections[l].SetStuckAt(connectionPos.Value, false); //added to track grabbed object
 
                     Vector2 vector2 = this.connections[l].stuckAt;
