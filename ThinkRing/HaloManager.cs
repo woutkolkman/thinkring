@@ -4,6 +4,7 @@
     {
         public static Halo halo;
         public static Options.ActivateTypes activeType = Options.ActivateTypes.Dragging;
+        public static Options.ColorTypes colorType = Options.ColorTypes.Static;
 
 
         public static void Update(RainWorldGame game)

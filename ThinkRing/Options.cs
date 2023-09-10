@@ -7,7 +7,8 @@ namespace ThinkRing
     public class Options : OptionInterface
     {
         public static Configurable<string> activateType;
-        public static Configurable<Color> haloColor;
+        public static Configurable<string> colorType;
+        public static Configurable<Color> staticHaloColor;
         public int curTab;
 
         public enum ActivateTypes
@@ -17,11 +18,19 @@ namespace ThinkRing
             ToolsActive
         }
 
+        public enum ColorTypes
+        {
+            Static,
+            CharacterDarker,
+            Character
+        }
+
 
         public Options()
         {
             activateType = config.Bind("activateType", defaultValue: ActivateTypes.Dragging.ToString(), new ConfigurableInfo("Halo is visible on this condition.", null, "", "Show when"));
-            haloColor = config.Bind("haloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
+            colorType = config.Bind("colorType", defaultValue: ColorTypes.Static.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
+            staticHaloColor = config.Bind("staticHaloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
         }
 
 
@@ -38,10 +47,11 @@ namespace ThinkRing
             /**************** General ****************/
             curTab = 0;
             AddTitle();
-            float x = 100f;
+            float x = 90f;
             float y = startHeight;
-            AddComboBox(activateType, new Vector2(x, y - 27f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 100f);
-            AddColorPicker(haloColor, new Vector2(225f, y -= 150f));
+            AddComboBox(activateType, new Vector2(x, y - 27f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddComboBox(colorType, new Vector2(x, y - 172f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddColorPicker(staticHaloColor, new Vector2(x + 135f, y - 300f));
         }
 
 

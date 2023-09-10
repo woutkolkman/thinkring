@@ -55,7 +55,11 @@ namespace ThinkRing
             foreach (Options.ActivateTypes val in Enum.GetValues(typeof(Options.ActivateTypes)))
                 if (String.Equals(Options.activateType.Value, val.ToString()))
                     HaloManager.activeType = val;
-            Plugin.Logger.LogDebug("RainWorldGameCtorHook, activeType: " + HaloManager.activeType.ToString());
+            foreach (Options.ColorTypes val in Enum.GetValues(typeof(Options.ColorTypes)))
+                if (String.Equals(Options.colorType.Value, val.ToString()))
+                    HaloManager.colorType = val;
+            Plugin.Logger.LogDebug("RainWorldGameCtorHook, activeType: " + HaloManager.activeType.ToString() + 
+                ", colorType: " + HaloManager.colorType.ToString());
         }
     }
 }

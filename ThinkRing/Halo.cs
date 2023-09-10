@@ -30,6 +30,7 @@ namespace ThinkRing
         public float size = 0f;
         public Vector2? connectionPos = null; //if not null, connections will fire
         public float boltFireChance = 0.4f;
+        public Color color = Color.white;
 
 
         public Halo(GenericBodyPart owner)
@@ -53,6 +54,17 @@ namespace ThinkRing
             this.ringRotations = new float[10, 5];
             this.expand = 1f;
             this.getToExpand = 1f;
+
+            //added color options
+            if (HaloManager.colorType == Options.ColorTypes.Static)
+                color = Options.staticHaloColor.Value;
+            if (HaloManager.colorType == Options.ColorTypes.CharacterDarker && owner?.owner is PlayerGraphics) {
+                color = PlayerGraphics.SlugcatColor((owner.owner as PlayerGraphics).CharacterForColor);
+                color *= 0.326797f; //100% / 153 (Psychic) * 50 (Halo)
+                color.a = 1f;
+            }
+            if (HaloManager.colorType == Options.ColorTypes.Character && owner?.owner is PlayerGraphics)
+                color = PlayerGraphics.SlugcatColor((owner.owner as PlayerGraphics).CharacterForColor);
         }
 
 
@@ -71,6 +83,7 @@ namespace ThinkRing
                 } else {
                     this.Destroy();
                     this.visibility = false;
+                    this.room?.RemoveObject(this);
                     this.RemoveFromRoom();
                     return;
                 }
@@ -184,18 +197,18 @@ namespace ThinkRing
             {
                 sLeaser.sprites[this.firstSprite + i] = new FSprite("Futile_White", true);
                 sLeaser.sprites[this.firstSprite + i].shader = rCam.game.rainWorld.Shaders["VectorCircle"];
-                sLeaser.sprites[this.firstSprite + i].color = Options.haloColor.Value;
+                sLeaser.sprites[this.firstSprite + i].color = color;
             }
             for (int j = 0; j < this.connections.Length; j++)
             {
                 sLeaser.sprites[this.firstSprite + 2 + j] = TriangleMesh.MakeLongMesh(20, false, false);
-                sLeaser.sprites[this.firstSprite + 2 + j].color = Options.haloColor.Value;
+                sLeaser.sprites[this.firstSprite + 2 + j].color = color;
             }
             for (int k = 0; k < 100; k++)
             {
                 sLeaser.sprites[this.firstBitSprite + k] = new FSprite("pixel", true);
                 sLeaser.sprites[this.firstBitSprite + k].scaleX = 2f; //smaller width of bits, so they are visibly separated
-                sLeaser.sprites[this.firstBitSprite + k].color = Options.haloColor.Value;
+                sLeaser.sprites[this.firstBitSprite + k].color = color;
             }
             this.AddToContainer(sLeaser, rCam, null);
         }
@@ -221,7 +234,7 @@ namespace ThinkRing
             sLeaser.sprites[this.firstSprite + 1].alpha = 3f / this.Radius(1f, timeStacker);
             for (int l = 0; l < this.connections.Length; l++)
             {
-                if (this.connections[l].lastLightUp > 0.05f || this.connections[l].lightUp > 0.05f)
+                if ((this.connections[l].lastLightUp > 0.05f || this.connections[l].lightUp > 0.05f) && visibility)
                 {
                     if (connectionPos.HasValue)
                         this.connections[l].SetStuckAt(connectionPos.Value, false); //added to track grabbed object
