@@ -9,6 +9,7 @@ namespace ThinkRing
         public static Configurable<string> activateType;
         public static Configurable<string> colorType;
         public static Configurable<Color> staticHaloColor;
+        public static Configurable<bool> whiteLightning;
         public int curTab;
 
         public enum ActivateTypes
@@ -31,6 +32,7 @@ namespace ThinkRing
             activateType = config.Bind("activateType", defaultValue: ActivateTypes.Dragging.ToString(), new ConfigurableInfo("Halo is visible on this condition.", null, "", "Show when"));
             colorType = config.Bind("colorType", defaultValue: ColorTypes.Static.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
             staticHaloColor = config.Bind("staticHaloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
+            whiteLightning = config.Bind("whiteLightning", defaultValue: false, new ConfigurableInfo("Uncheck to make lightning the same color as the halo itself.", null, "", "White lightning"));
         }
 
 
@@ -52,6 +54,7 @@ namespace ThinkRing
             AddComboBox(activateType, new Vector2(x, y - 27f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 120f);
             AddComboBox(colorType, new Vector2(x, y - 172f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
             AddColorPicker(staticHaloColor, new Vector2(x + 135f, y - 300f));
+            AddCheckbox(whiteLightning, new Vector2(x + 300f, y - 27f));
         }
 
 

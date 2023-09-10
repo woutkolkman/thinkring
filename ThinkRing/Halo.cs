@@ -202,7 +202,7 @@ namespace ThinkRing
             for (int j = 0; j < this.connections.Length; j++)
             {
                 sLeaser.sprites[this.firstSprite + 2 + j] = TriangleMesh.MakeLongMesh(20, false, false);
-                sLeaser.sprites[this.firstSprite + 2 + j].color = color;
+                sLeaser.sprites[this.firstSprite + 2 + j].color = Options.whiteLightning.Value ? Color.white : color;
             }
             for (int k = 0; k < 100; k++)
             {
@@ -316,7 +316,7 @@ namespace ThinkRing
                 vector.y = Mathf.Clamp(vector.y, stuckAt.y - 20f, stuckAt.y + 20f);
                 this.stuckAt = Vector2.Lerp(stuckAt, vector, 0.5f);
                 if (newHandle) //added optional newhandle
-                    this.handle = stuckAt + Custom.RNV() * Mathf.Lerp(400f, 700f, UnityEngine.Random.value);
+                    this.handle = stuckAt + Custom.RNV() * Mathf.Lerp(100f, 300f, UnityEngine.Random.value);
             }
         }
 
