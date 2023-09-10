@@ -255,9 +255,12 @@ namespace ThinkRing
                     float d = 2f * Mathf.Lerp(this.connections[l].lastLightUp, this.connections[l].lightUp, timeStacker);
                     for (int m = 0; m < 20; m++)
                     {
+                        //added alternative startposition
+                        Vector2 startPosBezier = center + this.connections[l].angleInHalo * this.Radius(2f, timeStacker) * size;
+
                         float f = (float)m / 19f;
-                        Vector2 a = Custom.DirVec(center, this.connections[l].stuckAt);
-                        Vector2 vector3 = Custom.Bezier(this.connections[l].stuckAt, this.connections[l].handle, center + a * this.Radius(2f, timeStacker) * size, center + a * 400f, f);
+                        Vector2 angle = Custom.DirVec(center, this.connections[l].stuckAt);
+                        Vector2 vector3 = Custom.Bezier(this.connections[l].stuckAt, this.connections[l].handle, startPosBezier, center + angle * 400f, f);
                         Vector2 vector4 = Custom.DirVec(vector2, vector3);
                         Vector2 a2 = Custom.PerpendicularVector(vector4);
                         float d2 = Vector2.Distance(vector2, vector3);
@@ -314,6 +317,8 @@ namespace ThinkRing
             public float lightUp;
             public float lastLightUp;
 
+            public Vector2 angleInHalo; //added random start angle
+
 
             public Connection(Halo halo)
             {
@@ -328,8 +333,10 @@ namespace ThinkRing
                 vector.x = Mathf.Clamp(vector.x, stuckAt.x - 20f, stuckAt.x + 20f); //TODO stuckAt value in a radius around position?
                 vector.y = Mathf.Clamp(vector.y, stuckAt.y - 20f, stuckAt.y + 20f);
                 this.stuckAt = Vector2.Lerp(stuckAt, vector, 0.5f);
-                if (newHandle) //added optional newhandle
+                if (newHandle) { //added optional newhandle
                     this.handle = stuckAt + Custom.RNV() * Mathf.Lerp(100f, 300f, UnityEngine.Random.value);
+                    angleInHalo = Custom.RNV(); //added random start angle
+                }
             }
         }
 
