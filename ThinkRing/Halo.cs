@@ -30,6 +30,7 @@ namespace ThinkRing
         public float size = 0f;
         public Vector2? connectionPos = null; //if not null, connections will fire
         public float boltFireChance = 0.4f;
+        public int boltFireCounter = 0; //alternative to boltFireChance, a constant counter for bolt fires
         public Color color = Color.white;
 
 
@@ -99,11 +100,14 @@ namespace ThinkRing
             //edited connectionsFireChance
             float connectionsFireChance = suppressConnectionFires ? 0f : boltFireChance;
 
+            //added contant bolt fire every 0.5s
+            bool fireBolt = (boltFireCounter++ % 20 == 0);
+
             for (int i = 0; i < this.connections.Length; i++)
             {
                 this.connections[i].lastLightUp = this.connections[i].lightUp;
                 this.connections[i].lightUp *= 0.9f;
-                if (UnityEngine.Random.value < connectionsFireChance / 40f && visibility && connectionPos.HasValue)
+                if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) && visibility && connectionPos.HasValue)
                 {
                     if (HaloManager.lightningType == Options.LightningTypes.OracleHalo) {
                         this.connections[i].SetStuckAt(connectionPos.Value); //added to connect bolt to grabbed object
@@ -121,6 +125,7 @@ namespace ThinkRing
                         room.PlaySound(SoundID.Death_Lightning_Spark_Spontaneous, 0f, (0.7f * (0.7f - noiseSuppress)), 1f);
                     }
                 }
+                fireBolt = false;
             }
             connectionPos = null; //reset connectionPos
 
