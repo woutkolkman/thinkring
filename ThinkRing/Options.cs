@@ -13,14 +13,15 @@ namespace ThinkRing
         public enum ActivateTypes
         {
             Dragging,
-            Always
+            Always,
+            ToolsActive
         }
 
 
         public Options()
         {
             activateType = config.Bind("activateType", defaultValue: ActivateTypes.Dragging.ToString(), new ConfigurableInfo("Halo is visible on this condition.", null, "", "Show when"));
-            haloColor = config.Bind("haloColor", defaultValue: new Color(0.19607843f, 0f, 0.19607843f, 1f), new ConfigurableInfo("Configured static color for halo.", null, "", ""));
+            haloColor = config.Bind("haloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
         }
 
 

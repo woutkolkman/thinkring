@@ -18,6 +18,10 @@
                 if (activeType == Options.ActivateTypes.Dragging && MouseDrag.Drag.dragChunk == null)
                     return;
 
+                //don't create new halo if mousedrag is not active
+                if (activeType == Options.ActivateTypes.ToolsActive && !MouseDrag.State.activated)
+                    return;
+
                 var head = ((creature as Player).graphicsModule as PlayerGraphics)?.head;
                 if (head == null)
                     return;
