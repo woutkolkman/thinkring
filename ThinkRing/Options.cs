@@ -8,7 +8,7 @@ namespace ThinkRing
     {
         public static Configurable<string> activateType, colorType, lightningType;
         public static Configurable<Color> staticHaloColor;
-        public static Configurable<bool> whiteLightning;
+        public static Configurable<bool> whiteLightning, sound, blink;
         public int curTab;
 
         public enum ActivateTypes
@@ -23,11 +23,12 @@ namespace ThinkRing
             Static,
             CharacterDarker,
             Character,
-            RGB1
+            RGB
         }
 
         public enum LightningTypes
         {
+            None,
             RustyMachine,
             Oracle,
             MoreSlugcats
@@ -41,6 +42,8 @@ namespace ThinkRing
             lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo("Type of lightning bolts.", null, "", "Lightning type"));
             staticHaloColor = config.Bind("staticHaloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
             whiteLightning = config.Bind("whiteLightning", defaultValue: true, new ConfigurableInfo("Uncheck to make lightning the same color as the halo itself.", null, "", "White lightning"));
+            sound = config.Bind("sound", defaultValue: true, new ConfigurableInfo("Uncheck to mute lightning.", null, "", "Sound"));
+            blink = config.Bind("blink", defaultValue: true, new ConfigurableInfo("Slugcat closes eyes when dragging things with your mouse.", null, "", "Blink"));
         }
 
 
@@ -63,7 +66,9 @@ namespace ThinkRing
             AddComboBox(colorType, new Vector2(x, y - 172f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
             AddComboBox(lightningType, new Vector2(x, y - 322f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
             AddColorPicker(staticHaloColor, new Vector2(x + 135f, y - 300f));
-            AddCheckbox(whiteLightning, new Vector2(x + 300f, y - 27f));
+            AddCheckbox(whiteLightning, new Vector2(x + 300f, y -= 27f));
+            AddCheckbox(sound, new Vector2(x + 300f, y -= 40f));
+            AddCheckbox(blink, new Vector2(x + 300f, y -= 40f));
         }
 
 

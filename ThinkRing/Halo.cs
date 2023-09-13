@@ -67,7 +67,7 @@ namespace ThinkRing
             }
             if (HaloManager.colorType == Options.ColorTypes.Character && owner?.owner is PlayerGraphics)
                 color = PlayerGraphics.SlugcatColor((owner.owner as PlayerGraphics).CharacterForColor);
-            if (HaloManager.colorType == Options.ColorTypes.RGB1)
+            if (HaloManager.colorType == Options.ColorTypes.RGB)
                 color = Color.red; //start color
         }
 
@@ -107,7 +107,7 @@ namespace ThinkRing
             for (int i = 0; i < this.connections.Length; i++)
             {
                 this.connections[i].lastLightUp = this.connections[i].lightUp;
-                this.connections[i].lightUp *= 0.9f;
+                this.connections[i].lightUp *= 0.7f;
                 if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) 
                     && visibility && connectionPos.HasValue)
                 {
@@ -116,9 +116,10 @@ namespace ThinkRing
                         target = Center(0f) + Custom.RNV() * 250f * Random.Range(0.3f, 1f);
 
                     if (HaloManager.lightningType == Options.LightningTypes.Oracle) {
-                        this.connections[i].SetStuckAt(target); //added to connect bolt to grabbed object
-                        this.connections[i].lightUp = 1f;
-                        this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1.5f * (1f - noiseSuppress)), 1f);
+                        connections[i].SetStuckAt(target); //added to connect bolt to grabbed object
+                        connections[i].lightUp = 1f;
+                        if (Options.sound.Value)
+                            room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1.5f * (1f - noiseSuppress)), 1f);
                     }
                     if (HaloManager.lightningType == Options.LightningTypes.RustyMachine)
                     {
@@ -128,7 +129,8 @@ namespace ThinkRing
                             Options.whiteLightning.Value ? Color.white : color, color
                         );
                         room.AddObject(obj);
-                        room.PlaySound(SoundID.Death_Lightning_Spark_Spontaneous, 0f, (0.7f * (1f - noiseSuppress)), 1f);
+                        if (Options.sound.Value)
+                            room.PlaySound(SoundID.Death_Lightning_Spark_Spontaneous, 0f, (0.7f * (1f - noiseSuppress)), 1f);
                     }
                     if (HaloManager.lightningType == Options.LightningTypes.MoreSlugcats)
                     {
@@ -142,7 +144,8 @@ namespace ThinkRing
                             lightningType = Custom.RGB2HSL(Options.whiteLightning.Value ? Color.white : color).x
                         };
                         room.AddObject(obj);
-                        room.PlaySound(SoundID.Death_Lightning_Spark_Object, 0f, (0.5f * (1f - noiseSuppress)), 1f);
+                        if (Options.sound.Value)
+                            room.PlaySound(SoundID.Death_Lightning_Spark_Object, 0f, (0.5f * (1f - noiseSuppress)), 1f);
                     }
                 }
                 fireBolt = false;
@@ -256,7 +259,7 @@ namespace ThinkRing
         public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
             //rgb cycle color type
-            if (HaloManager.colorType == Options.ColorTypes.RGB1) {
+            if (HaloManager.colorType == Options.ColorTypes.RGB) {
                 Vector3 HSL = Custom.RGB2HSL(color);
                 HSL.x += 0.002f;
                 if (HSL.x > 1f)
