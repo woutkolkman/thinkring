@@ -5,7 +5,7 @@
         public static Halo halo;
         public static Options.ActivateTypes activeType = Options.ActivateTypes.Dragging;
         public static Options.ColorTypes colorType = Options.ColorTypes.Static;
-        public static Options.LightningTypes lightningType = Options.LightningTypes.LightningBolt;
+        public static Options.LightningTypes lightningType = Options.LightningTypes.RustyMachine;
 
 
         public static void Update(RainWorldGame game)
