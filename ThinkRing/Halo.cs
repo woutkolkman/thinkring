@@ -111,14 +111,16 @@ namespace ThinkRing
                 if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) 
                     && visibility && connectionPos.HasValue)
                 {
-                    Vector2 target = randomBoltPositions ? Center(0f) + Custom.RNV() * 250f * Random.Range(0.3f, 1f) : connectionPos.Value;
+                    Vector2 target = connectionPos.Value + Random.insideUnitCircle * 5f;
+                    if (randomBoltPositions)
+                        target = Center(0f) + Custom.RNV() * 250f * Random.Range(0.3f, 1f);
 
-                    if (HaloManager.lightningType == Options.LightningTypes.OracleHalo) {
+                    if (HaloManager.lightningType == Options.LightningTypes.Oracle) {
                         this.connections[i].SetStuckAt(target); //added to connect bolt to grabbed object
                         this.connections[i].lightUp = 1f;
-                        this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1.5f * (1.5f - noiseSuppress)), 1f);
+                        this.room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1.5f * (1f - noiseSuppress)), 1f);
                     }
-                    if (HaloManager.lightningType == Options.LightningTypes.LightningBolt)
+                    if (HaloManager.lightningType == Options.LightningTypes.RustyMachine)
                     {
                         LightningBolt obj = new LightningBolt(
                             Center(0f) + Custom.DegToVec(Random.value * 360f) * Radius(2f, 0f) * size, 
@@ -126,7 +128,21 @@ namespace ThinkRing
                             Options.whiteLightning.Value ? Color.white : color, color
                         );
                         room.AddObject(obj);
-                        room.PlaySound(SoundID.Death_Lightning_Spark_Spontaneous, 0f, (0.7f * (0.7f - noiseSuppress)), 1f);
+                        room.PlaySound(SoundID.Death_Lightning_Spark_Spontaneous, 0f, (0.7f * (1f - noiseSuppress)), 1f);
+                    }
+                    if (HaloManager.lightningType == Options.LightningTypes.MoreSlugcats)
+                    {
+                        var obj = new MoreSlugcats.LightningBolt(
+                            Center(0f) + Custom.DegToVec(Random.value * 360f) * Radius(2f, 0f) * size,
+                            target,
+                            0, 0.2f)
+                        {
+                            intensity = 1f,
+                            lifeTime = 4f,
+                            lightningType = Custom.RGB2HSL(Options.whiteLightning.Value ? Color.white : color).x
+                        };
+                        room.AddObject(obj);
+                        room.PlaySound(SoundID.Death_Lightning_Spark_Object, 0f, (0.5f * (1f - noiseSuppress)), 1f);
                     }
                 }
                 fireBolt = false;
