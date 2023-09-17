@@ -2,7 +2,7 @@
   "id": "maxi-mol-gruntonium.thinkring",
   "name": "Think Ring",
   "version": "0.1.0",
-  "authors": "Maxi Mol & eight golden coins",
+  "authors": "Maxi Mol & gruntonium",
   "description": "Adds a halo to your scug, and lightning shards when dragging creatures.",
   "requirements": ["maxi-mol.mousedrag"],
   "requirements_names": ["Mouse Drag"],

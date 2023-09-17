@@ -33,6 +33,7 @@ namespace ThinkRing
         public int boltFireCounter = 0; //alternative to boltFireChance, a constant counter for bolt fires
         public Color color = Color.white;
         public bool randomBoltPositions = false;
+        public bool shortestDistFromHalo = false;
 
 
         public Halo(GenericBodyPart owner)
@@ -295,11 +296,12 @@ namespace ThinkRing
                     float d = 2f * Mathf.Lerp(this.connections[l].lastLightUp, this.connections[l].lightUp, timeStacker);
                     for (int m = 0; m < 20; m++)
                     {
+                        Vector2 angle = Custom.DirVec(center, this.connections[l].stuckAt);
+
                         //added alternative startposition
-                        Vector2 startPosBezier = center + this.connections[l].angleInHalo * this.Radius(2f, timeStacker) * size;
+                        Vector2 startPosBezier = center + (shortestDistFromHalo ? angle : this.connections[l].angleInHalo) * this.Radius(2f, timeStacker) * size;
 
                         float f = (float)m / 19f;
-                        Vector2 angle = Custom.DirVec(center, this.connections[l].stuckAt);
                         Vector2 vector3 = Custom.Bezier(this.connections[l].stuckAt, this.connections[l].handle, startPosBezier, center + angle * 400f, f);
                         Vector2 vector4 = Custom.DirVec(vector2, vector3);
                         Vector2 a2 = Custom.PerpendicularVector(vector4);

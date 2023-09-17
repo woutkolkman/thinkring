@@ -38,6 +38,7 @@
                     (creature as Player)?.Blink(30);
             }
             halo.randomBoltPositions = MouseDrag.Drag.dragChunk?.owner == creature;
+            halo.shortestDistFromHalo = MouseDrag.Drag.dragChunk?.owner == creature;
 
             if (halo.slatedForDeletetion || halo.room != creature?.room) {
                 halo = null;
