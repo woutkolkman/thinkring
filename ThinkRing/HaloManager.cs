@@ -2,7 +2,7 @@
 {
     public static class HaloManager
     {
-        public static Halo halo;
+        public static OracleHalo halo;
         public static Options.ActivateTypes activeType = Options.ActivateTypes.Dragging;
         public static Options.ColorTypes colorType = Options.ColorTypes.Static;
         public static Options.LightningTypes lightningType = Options.LightningTypes.RustyMachine;
@@ -29,7 +29,7 @@
                 if (head == null)
                     return;
 
-                halo = new Halo(head);
+                halo = new OracleHalo(head);
                 creature.room.AddObject(halo);
             }
 

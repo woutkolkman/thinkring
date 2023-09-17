@@ -4,7 +4,7 @@ using RWCustom;
 namespace ThinkRing
 {
     //basically a tweaked copy from the game (OracleGraphics.Halo)
-    public class Halo : UpdatableAndDeletable, IDrawable
+    public class OracleHalo : UpdatableAndDeletable, IDrawable
     {
         public GenericBodyPart owner; //determines position of halo
         public int firstSprite;
@@ -36,7 +36,7 @@ namespace ThinkRing
         public bool shortestDistFromHalo = false;
 
 
-        public Halo(GenericBodyPart owner)
+        public OracleHalo(GenericBodyPart owner)
         {
             this.owner = owner;
             this.firstSprite = 0;
@@ -352,7 +352,7 @@ namespace ThinkRing
 
         public class Connection
         {
-            public Halo halo;
+            public OracleHalo halo;
             public Vector2 stuckAt;
             public Vector2 handle;
             public float lightUp;
@@ -361,7 +361,7 @@ namespace ThinkRing
             public Vector2 angleInHalo; //added random start angle
 
 
-            public Connection(Halo halo)
+            public Connection(OracleHalo halo)
             {
                 this.halo = halo;
             }
@@ -384,7 +384,7 @@ namespace ThinkRing
 
         public class MemoryBit
         {
-            public Halo halo;
+            public OracleHalo halo;
             public IntVector2 position;
             public float filled;
             public float lastFilled;
@@ -399,7 +399,7 @@ namespace ThinkRing
                 return Mathf.Lerp(this.lastFilled, this.filled, timeStacker);
             }
 
-            public MemoryBit(Halo halo, IntVector2 position)
+            public MemoryBit(OracleHalo halo, IntVector2 position)
             {
                 this.halo = halo;
                 this.position = position;
