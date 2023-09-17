@@ -112,11 +112,14 @@ namespace ThinkRing
                 if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) 
                     && visibility && connectionPos.HasValue)
                 {
+                    Vector2 center = this.Center(0f);
                     Vector2 target = connectionPos.Value + Random.insideUnitCircle * 5f;
                     if (randomBoltPositions)
-                        target = Center(0f) + Custom.RNV() * 250f * Random.Range(0.3f, 1f);
+                        target = center + Custom.RNV() * 300f * Random.Range(0.5f, 1f);
+                    Vector2 start = center + (shortestDistFromHalo ? Custom.DirVec(center, target) : Custom.DegToVec(Random.value * 360f)) * Radius(2f, 0f) * size;
 
                     if (HaloManager.lightningType == Options.LightningTypes.Oracle) {
+                        //start position is calculated when drawing lightning
                         connections[i].SetStuckAt(target); //added to connect bolt to grabbed object
                         connections[i].lightUp = 1f;
                         if (Options.sound.Value)
@@ -125,8 +128,7 @@ namespace ThinkRing
                     if (HaloManager.lightningType == Options.LightningTypes.RustyMachine)
                     {
                         LightningBolt obj = new LightningBolt(
-                            Center(0f) + Custom.DegToVec(Random.value * 360f) * Radius(2f, 0f) * size, 
-                            target + Random.insideUnitCircle * 5f, Random.Range(0.3f, 0.1f), 
+                            start, target, Random.Range(0.1f, 0.3f), 
                             Options.whiteLightning.Value ? Color.white : color, color
                         );
                         room.AddObject(obj);
@@ -135,10 +137,7 @@ namespace ThinkRing
                     }
                     if (HaloManager.lightningType == Options.LightningTypes.MoreSlugcats)
                     {
-                        var obj = new MoreSlugcats.LightningBolt(
-                            Center(0f) + Custom.DegToVec(Random.value * 360f) * Radius(2f, 0f) * size,
-                            target,
-                            0, 0.2f)
+                        var obj = new MoreSlugcats.LightningBolt(start, target, 0, 0.2f)
                         {
                             intensity = 1f,
                             lifeTime = 4f,
@@ -299,10 +298,10 @@ namespace ThinkRing
                         Vector2 angle = Custom.DirVec(center, this.connections[l].stuckAt);
 
                         //added alternative startposition
-                        Vector2 startPosBezier = center + (shortestDistFromHalo ? angle : this.connections[l].angleInHalo) * this.Radius(2f, timeStacker) * size;
+                        Vector2 start = center + (shortestDistFromHalo ? angle : this.connections[l].angleInHalo) * this.Radius(2f, timeStacker) * size;
 
                         float f = (float)m / 19f;
-                        Vector2 vector3 = Custom.Bezier(this.connections[l].stuckAt, this.connections[l].handle, startPosBezier, center + angle * 400f, f);
+                        Vector2 vector3 = Custom.Bezier(this.connections[l].stuckAt, this.connections[l].handle, start, center + angle * 400f, f);
                         Vector2 vector4 = Custom.DirVec(vector2, vector3);
                         Vector2 a2 = Custom.PerpendicularVector(vector4);
                         float d2 = Vector2.Distance(vector2, vector3);
