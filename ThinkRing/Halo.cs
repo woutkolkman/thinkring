@@ -261,7 +261,7 @@ namespace ThinkRing
             //rgb cycle color type
             if (HaloManager.colorType == Options.ColorTypes.RGB) {
                 Vector3 HSL = Custom.RGB2HSL(color);
-                HSL.x += 0.002f;
+                HSL.x += Options.rgbCycleSpeed.Value / 100000f;
                 if (HSL.x > 1f)
                     HSL.x = 0f;
                 color = Custom.HSL2RGB(HSL.x, HSL.y, HSL.z);

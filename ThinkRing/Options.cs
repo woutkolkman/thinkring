@@ -9,6 +9,7 @@ namespace ThinkRing
         public static Configurable<string> activateType, colorType, lightningType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink;
+        public static Configurable<float> rgbCycleSpeed;
         public int curTab;
 
         public enum ActivateTypes
@@ -44,6 +45,7 @@ namespace ThinkRing
             whiteLightning = config.Bind("whiteLightning", defaultValue: true, new ConfigurableInfo("Uncheck to make lightning the same color as the halo itself.", null, "", "White lightning"));
             sound = config.Bind("sound", defaultValue: true, new ConfigurableInfo("Uncheck to mute lightning.", null, "", "Sound"));
             blink = config.Bind("blink", defaultValue: true, new ConfigurableInfo("Slugcat closes eyes when dragging things with your mouse.", null, "", "Blink"));
+            rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
         }
 
 
@@ -69,6 +71,7 @@ namespace ThinkRing
 
             AddComboBox(colorType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
             AddColorPicker(staticHaloColor, new Vector2(350f, y -= (150f - 24f)));
+            AddFloatBox(rgbCycleSpeed, new Vector2(350f, y -= 40f));
             AddDivider(y -= 10f);
 
             AddComboBox(lightningType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
@@ -213,6 +216,27 @@ namespace ThinkRing
             {
                 dividerLeft,
                 dividerRight
+            });
+        }
+
+
+        private void AddFloatBox(Configurable<float> option, Vector2 pos)
+        {
+            OpTextBox component = new OpTextBox(option, pos, 40f)
+            {
+                description = option.info.description,
+                maxLength = 4
+            };
+
+            OpLabel label = new OpLabel(pos.x + 58f, pos.y + 2f, option.info.Tags[0] as string)
+            {
+                description = option.info.description
+            };
+
+            Tabs[curTab].AddItems(new UIelement[]
+            {
+                component,
+                label
             });
         }
     }
