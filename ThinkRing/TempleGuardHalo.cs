@@ -8,7 +8,7 @@ namespace ThinkRing
     //basically a tweaked copy from the game (TempleGuardGraphics.Halo)
     class TempleGuardHalo : UpdatableAndDeletable, IDrawable
     {
-        public TempleGuardGraphics owner;
+        public GenericBodyPart owner; //determines position of halo
         public int firstSprite;
         public int totalSprites;
         public int firstSwapperSprite;
@@ -34,11 +34,16 @@ namespace ThinkRing
         public bool deactivated;
         public List<EntityID> reactedToCritters;
 
+        //added to original
+        float telekinesis = 0.3f;
+        float lastTelekin = 0.3f; //TODO track telekinesis
+        float stress = 0.5f;
 
-        public TempleGuardHalo(TempleGuardGraphics owner, int firstSprite)
+
+        public TempleGuardHalo(GenericBodyPart owner)
         {
             this.owner = owner;
-            this.firstSprite = firstSprite;
+            this.firstSprite = 0;
             this.rad = new float[2, 3];
             this.rad[0, 0] = 0f;
             this.rad[0, 1] = 0f;
@@ -110,7 +115,7 @@ namespace ThinkRing
 
         public float RadAtCircle(float circle, float timeStacker, float disruption)
         {
-            return ((circle + 1f) * 20f + Mathf.Lerp(this.rad[0, 1], this.rad[0, 0], timeStacker) * (1f - Mathf.Lerp(this.owner.lastTelekin, this.owner.telekinesis, timeStacker))) * Mathf.Lerp(Mathf.Lerp(this.rad[1, 1], this.rad[1, 0], timeStacker), 0.7f, Mathf.Lerp(this.owner.lastTelekin, this.owner.telekinesis, timeStacker)) * Mathf.Lerp(1f, Random.value * disruption, Mathf.Pow(disruption, 2f));
+            return ((circle + 1f) * 20f + Mathf.Lerp(this.rad[0, 1], this.rad[0, 0], timeStacker) * (1f - Mathf.Lerp(lastTelekin, telekinesis, timeStacker))) * Mathf.Lerp(Mathf.Lerp(this.rad[1, 1], this.rad[1, 0], timeStacker), 0.7f, Mathf.Lerp(lastTelekin, telekinesis, timeStacker)) * Mathf.Lerp(1f, UnityEngine.Random.value * disruption, Mathf.Pow(disruption, 2f));
         }
 
 
@@ -125,10 +130,10 @@ namespace ThinkRing
             get
             {
                 float b = 1.8f;
-                if (this.owner.guard.AI.focusCreature != null && this.owner.guard.AI.FocusCreatureMovingTowardsProtectExit && this.owner.guard.AI.focusCreature.VisualContact && this.owner.guard.AI.focusCreature.representedCreature.realizedCreature != null)
+                /*if (this.owner.guard.AI.focusCreature != null && this.owner.guard.AI.FocusCreatureMovingTowardsProtectExit && this.owner.guard.AI.focusCreature.VisualContact && this.owner.guard.AI.focusCreature.representedCreature.realizedCreature != null)
                 {
                     b = Custom.LerpMap(Vector2.Distance(this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.lastPos, this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.pos), 1.5f, 5f, 1.2f, 3f);
-                }
+                }*/
                 return Mathf.Lerp(0.2f, b, this.activity);
             }
         }
@@ -136,7 +141,7 @@ namespace ThinkRing
 
         public void ReactToCreature(bool firstSpot, Tracker.CreatureRepresentation creatureRep)
         {
-            if (Mathf.Abs(this.owner.guard.mainBodyChunk.pos.x - this.owner.guard.room.MiddleOfTile(creatureRep.BestGuessForPosition()).x) < 300f && !this.reactedToCritters.Contains(creatureRep.representedCreature.ID))
+            if (false /*Mathf.Abs(this.owner.guard.mainBodyChunk.pos.x - this.owner.guard.room.MiddleOfTile(creatureRep.BestGuessForPosition()).x) < 300f*/ && !this.reactedToCritters.Contains(creatureRep.representedCreature.ID))
             {
                 this.ringsActive = Math.Max(this.ringsActive, UnityEngine.Random.Range(3, 5));
                 this.rad[0, 2] = ((UnityEngine.Random.value > this.activity) ? 0f : ((float)UnityEngine.Random.Range(-1, 3) * 20f));
@@ -166,23 +171,26 @@ namespace ThinkRing
         }
 
 
-        public void Update()
+        public override void Update(bool eu)
         {
-            if (this.owner.guard.dead)
-            {
+            base.Update(eu);
+
+            //============================================== Original Code ================================================
+
+            if ((owner.owner.owner as Creature).dead)
                 this.deactivated = true;
-            }
-            if (this.activity > this.owner.guard.AI.stress)
+
+            if (this.activity > stress)
             {
-                this.activity = Mathf.Max(this.owner.guard.AI.stress - 0.0033333334f, this.owner.guard.AI.stress);
+                this.activity = Mathf.Max(stress - 0.0033333334f, stress);
             }
             else
             {
-                this.activity = this.owner.guard.AI.stress;
+                this.activity = stress;
             }
             if (UnityEngine.Random.value < 0.01f)
             {
-                this.ringsActive = Custom.IntClamp((int)Mathf.Lerp(2f, 9f, Mathf.Pow(this.owner.guard.AI.stress, 0.5f)), 2, 4);
+                this.ringsActive = Custom.IntClamp((int)Mathf.Lerp(2f, 9f, Mathf.Pow(stress, 0.5f)), 2, 4);
             }
             this.lastSlowRingsActive = this.slowRingsActive;
             if (this.slowRingsActive < (float)this.ringsActive)
@@ -193,7 +201,7 @@ namespace ThinkRing
             {
                 this.slowRingsActive = Mathf.Max((float)this.ringsActive, this.slowRingsActive - 0.05f);
             }
-            Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
+            Vector2 vector = owner.pos; //this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
             this.lastPos = this.pos;
             this.pos += Vector2.ClampMagnitude(vector - this.pos, 10f);
             this.pos = Vector2.Lerp(this.pos, vector, 0.1f);
@@ -207,7 +215,7 @@ namespace ThinkRing
             for (int i = 0; i < this.rotation.GetLength(0); i++)
             {
                 this.rotation[i, 1] = this.rotation[i, 0];
-                this.rotation[i, 0] += 0.2f / Mathf.Max(1f, this.CircumferenceAtCircle((float)i, 1f, this.savDisruption)) * ((i % 2 == 0) ? -1f : 1f) * Mathf.Lerp(this.Speed, 3f, this.owner.telekinesis);
+                this.rotation[i, 0] += 0.2f / Mathf.Max(1f, this.CircumferenceAtCircle((float)i, 1f, this.savDisruption)) * ((i % 2 == 0) ? -1f : 1f) * Mathf.Lerp(this.Speed, 3f, telekinesis);
             }
             for (int j = 0; j < this.swappers.Length; j++)
             {
@@ -316,6 +324,7 @@ namespace ThinkRing
 
         public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
+            sLeaser.sprites = new FSprite[this.totalSprites]; //added initializer, because templeguard sprite leaser does not exist
             Color saturatedGold = RainWorld.SaturatedGold;
             for (int i = 0; i < this.circles; i++)
             {
@@ -348,6 +357,7 @@ namespace ThinkRing
                 sLeaser.sprites[this.firstSprite + this.firstSmallCircleSprite + n].color = saturatedGold;
                 sLeaser.sprites[this.firstSprite + this.firstSmallCircleSprite + n].shader = rCam.room.game.rainWorld.Shaders["VectorCircle"];
             }
+            this.AddToContainer(sLeaser, rCam, null); //added
         }
 
 
@@ -448,6 +458,30 @@ namespace ThinkRing
             }
             float num = Mathf.Lerp(this.rotation[circle, 1], this.rotation[circle, 0], timeStacker);
             return Custom.DegToVec(((float)glyph / (float)this.glyphs[circle].Length + num) * 360f) * this.RadAtCircle((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker), timeStacker, this.savDisruption);
+        }
+
+
+        //added funtion to support interface IDrawable
+        public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+        {
+            DrawSprites(sLeaser, rCam, timeStacker, camPos, new Vector2(), new Vector2());
+        }
+
+
+        //added funtion to support interface IDrawable
+        public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+        {
+        }
+
+
+        //added funtion to support interface IDrawable
+        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
+        {
+            sLeaser.RemoveAllSpritesFromContainer();
+            if (newContainer == null)
+                newContainer = rCam.ReturnFContainer("BackgroundShortcuts");
+            for (int i = 0; i < this.totalSprites; i++)
+                newContainer.AddChild(sLeaser.sprites[i]);
         }
 
 

@@ -252,7 +252,7 @@ namespace ThinkRing
                 sLeaser.sprites[this.firstBitSprite + k].scaleX = 2f; //smaller width of bits, so they are visibly separated
                 sLeaser.sprites[this.firstBitSprite + k].color = color;
             }
-            this.AddToContainer(sLeaser, rCam, null);
+            this.AddToContainer(sLeaser, rCam, null); //added
         }
 
 
@@ -340,13 +340,13 @@ namespace ThinkRing
         }
 
 
-        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContatiner)
+        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
         {
             sLeaser.RemoveAllSpritesFromContainer();
-            if (newContatiner == null)
-                newContatiner = rCam.ReturnFContainer("BackgroundShortcuts");
+            if (newContainer == null)
+                newContainer = rCam.ReturnFContainer("BackgroundShortcuts");
             for (int i = 0; i < this.totalSprites; i++)
-                newContatiner.AddChild(sLeaser.sprites[i]);
+                newContainer.AddChild(sLeaser.sprites[i]);
         }
 
 

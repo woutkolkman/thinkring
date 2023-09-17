@@ -45,6 +45,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TempleGuardHalo.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
