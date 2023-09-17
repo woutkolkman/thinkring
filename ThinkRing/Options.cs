@@ -49,8 +49,6 @@ namespace ThinkRing
 
         public override void Initialize()
         {
-            const float startHeight = 520f;
-
             base.Initialize();
             Tabs = new OpTab[]
             {
@@ -60,15 +58,20 @@ namespace ThinkRing
             /**************** General ****************/
             curTab = 0;
             AddTitle();
-            float x = 90f;
-            float y = startHeight;
-            AddComboBox(activateType, new Vector2(x, y - 27f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 120f);
-            AddComboBox(colorType, new Vector2(x, y - 172f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
-            AddComboBox(lightningType, new Vector2(x, y - 322f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
-            AddColorPicker(staticHaloColor, new Vector2(x + 135f, y - 300f));
-            AddCheckbox(whiteLightning, new Vector2(x + 300f, y -= 27f));
-            AddCheckbox(sound, new Vector2(x + 300f, y -= 40f));
-            AddCheckbox(blink, new Vector2(x + 300f, y -= 40f));
+            AddDivider(530f);
+
+            float y = 533f;
+            AddComboBox(activateType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddCheckbox(whiteLightning, new Vector2(350f, y));
+            AddCheckbox(sound, new Vector2(350f, y -= 40f));
+            AddCheckbox(blink, new Vector2(350f, y -= 40f));
+            AddDivider(y -= 10f);
+
+            AddComboBox(colorType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddColorPicker(staticHaloColor, new Vector2(350f, y -= (150f - 24f)));
+            AddDivider(y -= 10f);
+
+            AddComboBox(lightningType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
         }
 
 
@@ -189,6 +192,27 @@ namespace ThinkRing
             Tabs[curTab].AddItems(new UIelement[]
             {
                 colorPicker
+            });
+        }
+
+
+        //based on https://github.com/SabreML/MusicAnnouncements/blob/master/src/MusicAnnouncementsConfig.cs
+        private void AddDivider(float y)
+        {
+            OpImage dividerLeft = new OpImage(new Vector2(300f, y), "LinearGradient200");
+            dividerLeft.sprite.SetAnchor(0.5f, 0f);
+            dividerLeft.sprite.rotation = 270f;
+            dividerLeft.sprite.height *= 1.6f;
+
+            OpImage dividerRight = new OpImage(new Vector2(300f, y), "LinearGradient200");
+            dividerRight.sprite.SetAnchor(0.5f, 0f);
+            dividerRight.sprite.rotation = 90f;
+            dividerRight.sprite.height *= 1.6f;
+
+            Tabs[curTab].AddItems(new UIelement[]
+            {
+                dividerLeft,
+                dividerRight
             });
         }
     }
