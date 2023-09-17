@@ -13,7 +13,8 @@
             Creature creature = game?.FirstAlivePlayer?.realizedCreature;
 
             if (halo == null) {
-                if (!(creature is Player) || creature.room == null || creature.slatedForDeletetion)
+                if (!(creature is Player) || creature.room == null || 
+                    creature.slatedForDeletetion || creature.State?.alive == false)
                     return;
 
                 //don't create new halo if not dragging
