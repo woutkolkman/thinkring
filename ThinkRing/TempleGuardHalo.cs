@@ -6,7 +6,7 @@ using System;
 namespace ThinkRing
 {
     //basically a tweaked copy from the game (TempleGuardGraphics.Halo)
-    class TempleGuardHalo : UpdatableAndDeletable, IDrawable
+    public class TempleGuardHalo : UpdatableAndDeletable, IDrawable
     {
         public GenericBodyPart owner; //determines position of halo
         public int firstSprite;
@@ -31,13 +31,15 @@ namespace ThinkRing
         public Vector2 pos;
         public Vector2 lastPos;
         public bool firstUpdate = true;
-        public bool deactivated;
+        public bool deactivated = false;
         public List<EntityID> reactedToCritters;
 
         //added to original
         float telekinesis = 0.3f;
         float lastTelekin = 0.3f; //TODO track telekinesis
         float stress = 0.5f;
+        public Vector2? connectionPos = null;
+        public Color color = Color.white;
 
 
         public TempleGuardHalo(GenericBodyPart owner)
@@ -107,73 +109,23 @@ namespace ThinkRing
         }
 
 
-        public float Circumference(float rad)
-        {
-            return 2f * rad * 3.1415927f;
-        }
-
-
-        public float RadAtCircle(float circle, float timeStacker, float disruption)
-        {
-            return ((circle + 1f) * 20f + Mathf.Lerp(this.rad[0, 1], this.rad[0, 0], timeStacker) * (1f - Mathf.Lerp(lastTelekin, telekinesis, timeStacker))) * Mathf.Lerp(Mathf.Lerp(this.rad[1, 1], this.rad[1, 0], timeStacker), 0.7f, Mathf.Lerp(lastTelekin, telekinesis, timeStacker)) * Mathf.Lerp(1f, UnityEngine.Random.value * disruption, Mathf.Pow(disruption, 2f));
-        }
-
-
-        public float CircumferenceAtCircle(float circle, float timeStacker, float disruption)
-        {
-            return this.Circumference(this.RadAtCircle(circle, timeStacker, disruption));
-        }
-
-
-        public float Speed
-        {
-            get
-            {
-                float b = 1.8f;
-                /*if (this.owner.guard.AI.focusCreature != null && this.owner.guard.AI.FocusCreatureMovingTowardsProtectExit && this.owner.guard.AI.focusCreature.VisualContact && this.owner.guard.AI.focusCreature.representedCreature.realizedCreature != null)
-                {
-                    b = Custom.LerpMap(Vector2.Distance(this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.lastPos, this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.pos), 1.5f, 5f, 1.2f, 3f);
-                }*/
-                return Mathf.Lerp(0.2f, b, this.activity);
-            }
-        }
-
-
-        public void ReactToCreature(bool firstSpot, Tracker.CreatureRepresentation creatureRep)
-        {
-            if (false /*Mathf.Abs(this.owner.guard.mainBodyChunk.pos.x - this.owner.guard.room.MiddleOfTile(creatureRep.BestGuessForPosition()).x) < 300f*/ && !this.reactedToCritters.Contains(creatureRep.representedCreature.ID))
-            {
-                this.ringsActive = Math.Max(this.ringsActive, UnityEngine.Random.Range(3, 5));
-                this.rad[0, 2] = ((UnityEngine.Random.value > this.activity) ? 0f : ((float)UnityEngine.Random.Range(-1, 3) * 20f));
-                this.rad[1, 2] = ((UnityEngine.Random.value < 1f / Mathf.Lerp(1f, 5f, this.activity)) ? 1f : Mathf.Lerp(0.75f, 1.25f, UnityEngine.Random.value));
-                this.reactedToCritters.Add(creatureRep.representedCreature.ID);
-                for (int i = 0; i < (int)Custom.LerpMap(creatureRep.representedCreature.realizedCreature.TotalMass, 0.2f, 2f, 4f, 100f); i++)
-                {
-                    int num = UnityEngine.Random.Range(0, this.glyphs.Length);
-                    int num2 = UnityEngine.Random.Range(0, this.glyphs[num].Length);
-                    this.glyphs[num][num2] = -1;
-                    this.dirtyGlyphs[num][num2] = true;
-                }
-                this.activity = Mathf.Min(1f, this.activity + 0.2f);
-                return;
-            }
-            for (int j = 0; j < (int)Custom.LerpMap(creatureRep.representedCreature.realizedCreature.TotalMass, 0.2f, 2f, 2f, (float)(11 * this.ringsActive)); j++)
-            {
-                int num3 = UnityEngine.Random.Range(0, this.ringsActive);
-                int num4 = UnityEngine.Random.Range(0, this.glyphs[num3].Length);
-                this.glyphs[num3][num4] = UnityEngine.Random.Range(0, 7);
-                this.dirtyGlyphs[num3][num4] = true;
-                if (UnityEngine.Random.value < 0.5f)
-                {
-                    this.glyphPositions[num3][num4, 2] = 1f;
-                }
-            }
-        }
-
-
         public override void Update(bool eu)
         {
             base.Update(eu);
+
+            //destroy and return if owner is deleted or moves to another room
+            if (owner?.owner?.owner?.slatedForDeletetion != false || 
+                this.room != owner.owner?.owner?.room || 
+                (HaloManager.activeType == Options.ActivateTypes.Dragging && connectionPos == null) || //remove halo when not dragging
+                (HaloManager.activeType == Options.ActivateTypes.ToolsActive && !MouseDrag.State.activated)) //remove halo when mousedrag is not active
+            {
+                this.Destroy();
+                this.deactivated = true;
+                this.room?.RemoveObject(this);
+                this.RemoveFromRoom();
+                return;
+            }
+            connectionPos = null; //reset connectionPos
 
             //============================================== Original Code ================================================
 
@@ -201,7 +153,8 @@ namespace ThinkRing
             {
                 this.slowRingsActive = Mathf.Max((float)this.ringsActive, this.slowRingsActive - 0.05f);
             }
-            Vector2 vector = owner.pos; //this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
+            //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
+            Vector2 vector = (owner.owner.owner as Creature).mainBodyChunk.pos;
             this.lastPos = this.pos;
             this.pos += Vector2.ClampMagnitude(vector - this.pos, 10f);
             this.pos = Vector2.Lerp(this.pos, vector, 0.1f);
@@ -322,14 +275,77 @@ namespace ThinkRing
         }
 
 
+        public float Circumference(float rad)
+        {
+            return 2f * rad * 3.1415927f;
+        }
+
+
+        public float RadAtCircle(float circle, float timeStacker, float disruption)
+        {
+            return ((circle + 1f) * 20f + Mathf.Lerp(this.rad[0, 1], this.rad[0, 0], timeStacker) * (1f - Mathf.Lerp(lastTelekin, telekinesis, timeStacker))) * Mathf.Lerp(Mathf.Lerp(this.rad[1, 1], this.rad[1, 0], timeStacker), 0.7f, Mathf.Lerp(lastTelekin, telekinesis, timeStacker)) * Mathf.Lerp(1f, UnityEngine.Random.value * disruption, Mathf.Pow(disruption, 2f));
+        }
+
+
+        public float CircumferenceAtCircle(float circle, float timeStacker, float disruption)
+        {
+            return this.Circumference(this.RadAtCircle(circle, timeStacker, disruption));
+        }
+
+
+        public float Speed
+        {
+            get
+            {
+                float b = 1.8f;
+                /*if (this.owner.guard.AI.focusCreature != null && this.owner.guard.AI.FocusCreatureMovingTowardsProtectExit && this.owner.guard.AI.focusCreature.VisualContact && this.owner.guard.AI.focusCreature.representedCreature.realizedCreature != null)
+                {
+                    b = Custom.LerpMap(Vector2.Distance(this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.lastPos, this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.pos), 1.5f, 5f, 1.2f, 3f);
+                }*/
+                return Mathf.Lerp(0.2f, b, this.activity);
+            }
+        }
+
+
+        public void ReactToCreature(bool firstSpot, Tracker.CreatureRepresentation creatureRep)
+        {
+            if (false /*Mathf.Abs(this.owner.guard.mainBodyChunk.pos.x - this.owner.guard.room.MiddleOfTile(creatureRep.BestGuessForPosition()).x) < 300f*/ && !this.reactedToCritters.Contains(creatureRep.representedCreature.ID))
+            {
+                this.ringsActive = Math.Max(this.ringsActive, UnityEngine.Random.Range(3, 5));
+                this.rad[0, 2] = ((UnityEngine.Random.value > this.activity) ? 0f : ((float)UnityEngine.Random.Range(-1, 3) * 20f));
+                this.rad[1, 2] = ((UnityEngine.Random.value < 1f / Mathf.Lerp(1f, 5f, this.activity)) ? 1f : Mathf.Lerp(0.75f, 1.25f, UnityEngine.Random.value));
+                this.reactedToCritters.Add(creatureRep.representedCreature.ID);
+                for (int i = 0; i < (int)Custom.LerpMap(creatureRep.representedCreature.realizedCreature.TotalMass, 0.2f, 2f, 4f, 100f); i++)
+                {
+                    int num = UnityEngine.Random.Range(0, this.glyphs.Length);
+                    int num2 = UnityEngine.Random.Range(0, this.glyphs[num].Length);
+                    this.glyphs[num][num2] = -1;
+                    this.dirtyGlyphs[num][num2] = true;
+                }
+                this.activity = Mathf.Min(1f, this.activity + 0.2f);
+                return;
+            }
+            for (int j = 0; j < (int)Custom.LerpMap(creatureRep.representedCreature.realizedCreature.TotalMass, 0.2f, 2f, 2f, (float)(11 * this.ringsActive)); j++)
+            {
+                int num3 = UnityEngine.Random.Range(0, this.ringsActive);
+                int num4 = UnityEngine.Random.Range(0, this.glyphs[num3].Length);
+                this.glyphs[num3][num4] = UnityEngine.Random.Range(0, 7);
+                this.dirtyGlyphs[num3][num4] = true;
+                if (UnityEngine.Random.value < 0.5f)
+                {
+                    this.glyphPositions[num3][num4, 2] = 1f;
+                }
+            }
+        }
+
+
         public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
             sLeaser.sprites = new FSprite[this.totalSprites]; //added initializer, because templeguard sprite leaser does not exist
-            Color saturatedGold = RainWorld.SaturatedGold;
             for (int i = 0; i < this.circles; i++)
             {
                 sLeaser.sprites[this.firstSprite + i] = new FSprite("Futile_White", true);
-                sLeaser.sprites[this.firstSprite + i].color = saturatedGold;
+                sLeaser.sprites[this.firstSprite + i].color = color;
                 sLeaser.sprites[this.firstSprite + i].shader = rCam.room.game.rainWorld.Shaders["VectorCircle"];
             }
             int num = this.circles;
@@ -338,7 +354,7 @@ namespace ThinkRing
                 for (int k = 0; k < this.glyphs[j].Length; k++)
                 {
                     sLeaser.sprites[this.firstSprite + num] = new FSprite("haloGlyph" + this.glyphs[j][k].ToString(), true);
-                    sLeaser.sprites[this.firstSprite + num].color = saturatedGold;
+                    sLeaser.sprites[this.firstSprite + num].color = color;
                     num++;
                 }
             }
@@ -349,12 +365,12 @@ namespace ThinkRing
             for (int m = 0; m < this.lines.GetLength(0); m++)
             {
                 sLeaser.sprites[this.firstSprite + this.firstLineSprite + m] = new FSprite("pixel", true);
-                sLeaser.sprites[this.firstSprite + this.firstLineSprite + m].color = saturatedGold;
+                sLeaser.sprites[this.firstSprite + this.firstLineSprite + m].color = color;
             }
             for (int n = 0; n < this.smallCircles.GetLength(0); n++)
             {
                 sLeaser.sprites[this.firstSprite + this.firstSmallCircleSprite + n] = new FSprite("Futile_White", true);
-                sLeaser.sprites[this.firstSprite + this.firstSmallCircleSprite + n].color = saturatedGold;
+                sLeaser.sprites[this.firstSprite + this.firstSmallCircleSprite + n].color = color;
                 sLeaser.sprites[this.firstSprite + this.firstSmallCircleSprite + n].shader = rCam.room.game.rainWorld.Shaders["VectorCircle"];
             }
             this.AddToContainer(sLeaser, rCam, null); //added
@@ -464,7 +480,7 @@ namespace ThinkRing
         //added funtion to support interface IDrawable
         public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
-            DrawSprites(sLeaser, rCam, timeStacker, camPos, new Vector2(), new Vector2());
+            DrawSprites(sLeaser, rCam, timeStacker, camPos, owner.pos, new Vector2());
         }
 
 
@@ -547,13 +563,13 @@ namespace ThinkRing
             public void InitiateSprites(int frst, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
             {
                 sLeaser.sprites[frst + 2] = new FSprite("pixel", true);
-                sLeaser.sprites[frst + 2].color = RainWorld.SaturatedGold;
+                sLeaser.sprites[frst + 2].color = halo.color;
                 sLeaser.sprites[frst + 2].anchorY = 0f;
                 for (int i = 0; i < 2; i++)
                 {
                     sLeaser.sprites[frst + i] = new FSprite("Futile_White", true);
                     sLeaser.sprites[frst + i].scale = 1.25f;
-                    sLeaser.sprites[frst + i].color = RainWorld.SaturatedGold;
+                    sLeaser.sprites[frst + i].color = halo.color;
                     sLeaser.sprites[frst + i].shader = rCam.room.game.rainWorld.Shaders["VectorCircle"];
                     sLeaser.sprites[frst + i].alpha = 0.1f;
                 }

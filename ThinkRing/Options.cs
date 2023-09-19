@@ -6,7 +6,7 @@ namespace ThinkRing
 {
     public class Options : OptionInterface
     {
-        public static Configurable<string> activateType, colorType, lightningType;
+        public static Configurable<string> activateType, colorType, lightningType, haloType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink;
         public static Configurable<float> rgbCycleSpeed;
@@ -35,12 +35,20 @@ namespace ThinkRing
             MoreSlugcats
         }
 
+        public enum HaloTypes
+        {
+            None,
+            Oracle,
+            TempleGuard
+        }
+
 
         public Options()
         {
             activateType = config.Bind("activateType", defaultValue: ActivateTypes.Dragging.ToString(), new ConfigurableInfo("Halo is visible on this condition.", null, "", "Show when"));
-            colorType = config.Bind("colorType", defaultValue: ColorTypes.Static.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
-            lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo("Type of lightning bolts.", null, "", "Lightning type"));
+            colorType = config.Bind("colorType", defaultValue: ColorTypes.CharacterDarker.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
+            lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo(null, null, "", "Lightning type"));
+            haloType = config.Bind("haloType", defaultValue: HaloTypes.Oracle.ToString(), new ConfigurableInfo(null, null, "", "Halo type"));
             staticHaloColor = config.Bind("staticHaloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
             whiteLightning = config.Bind("whiteLightning", defaultValue: true, new ConfigurableInfo("Uncheck to make lightning the same color as the halo itself.", null, "", "White lightning"));
             sound = config.Bind("sound", defaultValue: true, new ConfigurableInfo("Uncheck to mute lightning.", null, "", "Sound"));
@@ -63,25 +71,27 @@ namespace ThinkRing
             AddDivider(530f);
 
             float y = 533f;
-            AddComboBox(activateType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 120f);
-            AddCheckbox(whiteLightning, new Vector2(350f, y));
-            AddCheckbox(sound, new Vector2(350f, y -= 40f));
-            AddCheckbox(blink, new Vector2(350f, y -= 40f));
+            float l = 140f, r = 340f;
+            AddComboBox(activateType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddCheckbox(whiteLightning, new Vector2(r, y));
+            AddCheckbox(sound, new Vector2(r, y -= 40f));
+            AddCheckbox(blink, new Vector2(r, y -= 40f));
             AddDivider(y -= 10f);
 
-            AddComboBox(colorType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
-            AddColorPicker(staticHaloColor, new Vector2(350f, y -= (150f - 24f)));
-            AddFloatBox(rgbCycleSpeed, new Vector2(350f, y -= 40f));
+            AddComboBox(colorType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddColorPicker(staticHaloColor, new Vector2(r, y -= (150f - 24f)));
+            AddFloatBox(rgbCycleSpeed, new Vector2(r, y -= 40f));
             AddDivider(y -= 10f);
 
-            AddComboBox(lightningType, new Vector2(150f, y -= 40f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddComboBox(lightningType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddComboBox(haloType, new Vector2(r, y), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Right, width: 120f);
         }
 
 
         private void AddTitle()
         {
-            OpLabel title = new OpLabel(new Vector2(150f, 560f), new Vector2(300f, 30f), Plugin.Name, bigText: true);
-            OpLabel version = new OpLabel(new Vector2(150f, 540f), new Vector2(300f, 30f), $"Version {Plugin.Version}");
+            OpLabel title = new OpLabel(new Vector2(140f, 560f), new Vector2(300f, 30f), Plugin.Name, bigText: true);
+            OpLabel version = new OpLabel(new Vector2(140f, 540f), new Vector2(300f, 30f), $"Version {Plugin.Version}");
 
             Tabs[curTab].AddItems(new UIelement[]
             {

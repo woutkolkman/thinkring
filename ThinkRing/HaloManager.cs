@@ -2,17 +2,19 @@
 {
     public static class HaloManager
     {
-        public static OracleHalo halo;
+        public static OracleHalo oHalo;
+        public static TempleGuardHalo gHalo;
         public static Options.ActivateTypes activeType = Options.ActivateTypes.Dragging;
-        public static Options.ColorTypes colorType = Options.ColorTypes.Static;
+        public static Options.ColorTypes colorType = Options.ColorTypes.CharacterDarker;
         public static Options.LightningTypes lightningType = Options.LightningTypes.RustyMachine;
+        public static Options.HaloTypes haloType = Options.HaloTypes.Oracle;
 
 
         public static void Update(RainWorldGame game)
         {
             Creature creature = game?.FirstAlivePlayer?.realizedCreature;
 
-            if (halo == null) {
+            if (oHalo == null && gHalo == null) {
                 if (!(creature is Player) || creature.room == null || 
                     creature.slatedForDeletetion || creature.State?.alive == false)
                     return;
@@ -29,20 +31,35 @@
                 if (head == null)
                     return;
 
-                halo = new OracleHalo(head);
-                creature.room.AddObject(halo);
+                if (haloType == Options.HaloTypes.Oracle) {
+                    oHalo = new OracleHalo(head);
+                    creature.room.AddObject(oHalo);
+                }
+                if (haloType == Options.HaloTypes.TempleGuard) {
+                    gHalo = new TempleGuardHalo(head);
+                    creature.room.AddObject(gHalo);
+                }
             }
 
-            if (MouseDrag.Drag.dragChunk != null) {
-                halo.connectionPos = MouseDrag.Drag.dragChunk.pos;
-                if (Options.blink.Value)
+            if (oHalo != null || gHalo != null)
+                if (MouseDrag.Drag.dragChunk != null && Options.blink.Value)
                     (creature as Player)?.Blink(30);
-            }
-            halo.randomBoltPositions = MouseDrag.Drag.dragChunk?.owner == creature;
-            halo.shortestDistFromHalo = MouseDrag.Drag.dragChunk?.owner == creature;
 
-            if (halo.slatedForDeletetion || halo.room != creature?.room) {
-                halo = null;
+            if (oHalo != null) {
+                oHalo.connectionPos = MouseDrag.Drag.dragChunk?.pos;
+                oHalo.randomBoltPositions = MouseDrag.Drag.dragChunk?.owner == creature;
+                oHalo.shortestDistFromHalo = MouseDrag.Drag.dragChunk?.owner == creature;
+
+                if (oHalo.slatedForDeletetion || oHalo.room != creature?.room)
+                    oHalo = null;
+            }
+
+            if (gHalo != null) {
+                gHalo.connectionPos = MouseDrag.Drag.dragChunk?.pos;
+                //TODO add lightningbolts?
+
+                if (gHalo.slatedForDeletetion || gHalo.room != creature?.room)
+                    gHalo = null;
             }
         }
     }
