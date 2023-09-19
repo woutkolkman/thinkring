@@ -70,6 +70,7 @@ namespace ThinkRing
                 color = PlayerGraphics.SlugcatColor((owner.owner as PlayerGraphics).CharacterForColor);
             if (HaloManager.colorType == Options.ColorTypes.RGB)
                 color = Color.red; //start color
+            //TODO move to halomanager
         }
 
 
