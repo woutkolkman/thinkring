@@ -4,11 +4,9 @@ using RWCustom;
 namespace ThinkRing
 {
     //basically a tweaked copy from the game (OracleGraphics.Halo)
-    public class OracleHalo : UpdatableAndDeletable, IDrawable
+    public class OracleHalo : BaseHalo
     {
         public GenericBodyPart owner; //determines position of halo
-        public int firstSprite;
-        public int totalSprites;
         public int firstBitSprite;
         public Connection[] connections;
         public MemoryBit[][] bits;
@@ -36,7 +34,7 @@ namespace ThinkRing
         public bool shortestDistFromHalo = false;
 
 
-        public OracleHalo(GenericBodyPart owner)
+        public OracleHalo(GenericBodyPart owner) : base()
         {
             this.owner = owner;
             this.firstSprite = 0;
@@ -233,7 +231,7 @@ namespace ThinkRing
         }
 
 
-        public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
+        public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
             sLeaser.sprites = new FSprite[this.totalSprites]; //added initializer, because oracle sprite leaser does not exist
             for (int i = 0; i < 2; i++)
@@ -257,7 +255,7 @@ namespace ThinkRing
         }
 
 
-        public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+        public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
             //rgb cycle color type
             if (HaloManager.colorType == Options.ColorTypes.RGB) {
@@ -333,21 +331,6 @@ namespace ThinkRing
                     spriteNum++;
                 }
             }
-        }
-
-
-        public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
-        {
-        }
-
-
-        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
-        {
-            sLeaser.RemoveAllSpritesFromContainer();
-            if (newContainer == null)
-                newContainer = rCam.ReturnFContainer("BackgroundShortcuts");
-            for (int i = 0; i < this.totalSprites; i++)
-                newContainer.AddChild(sLeaser.sprites[i]);
         }
 
 

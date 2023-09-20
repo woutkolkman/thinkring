@@ -6,11 +6,9 @@ using System;
 namespace ThinkRing
 {
     //basically a tweaked copy from the game (TempleGuardGraphics.Halo)
-    public class TempleGuardHalo : UpdatableAndDeletable, IDrawable
+    public class TempleGuardHalo : BaseHalo
     {
         public GenericBodyPart owner; //determines position of halo
-        public int firstSprite;
-        public int totalSprites;
         public int firstSwapperSprite;
         public int firstLineSprite;
         public int firstSmallCircleSprite;
@@ -42,7 +40,7 @@ namespace ThinkRing
         public Color color = Color.white;
 
 
-        public TempleGuardHalo(GenericBodyPart owner)
+        public TempleGuardHalo(GenericBodyPart owner) : base()
         {
             this.owner = owner;
             this.firstSprite = 0;
@@ -339,7 +337,7 @@ namespace ThinkRing
         }
 
 
-        public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
+        public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
             sLeaser.sprites = new FSprite[this.totalSprites]; //added initializer, because templeguard sprite leaser does not exist
             for (int i = 0; i < this.circles; i++)
@@ -377,8 +375,11 @@ namespace ThinkRing
         }
 
 
-        public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos, Vector2 headPos, Vector2 headDir)
+        public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
+            Vector2 headPos = owner.pos; //replaced parameter with fixed value
+            Vector2 headDir = new Vector2(); //replaced parameter with fixed value
+
             Vector2 vector = Vector2.Lerp(this.lastPos, this.pos, timeStacker);
             float num = Mathf.InverseLerp(10f, 150f, Vector2.Distance(vector, headPos - headDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
             int num2 = Custom.IntClamp((int)(Mathf.Lerp(this.lastSlowRingsActive, this.slowRingsActive, timeStacker) + Mathf.Lerp(-0.4f, 0.4f, UnityEngine.Random.value) * Mathf.InverseLerp(0.01f, 0.1f, Mathf.Abs(this.lastSlowRingsActive - this.slowRingsActive))), 2, 4);
@@ -474,30 +475,6 @@ namespace ThinkRing
             }
             float num = Mathf.Lerp(this.rotation[circle, 1], this.rotation[circle, 0], timeStacker);
             return Custom.DegToVec(((float)glyph / (float)this.glyphs[circle].Length + num) * 360f) * this.RadAtCircle((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker), timeStacker, this.savDisruption);
-        }
-
-
-        //added funtion to support interface IDrawable
-        public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
-        {
-            DrawSprites(sLeaser, rCam, timeStacker, camPos, owner.pos, new Vector2());
-        }
-
-
-        //added funtion to support interface IDrawable
-        public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
-        {
-        }
-
-
-        //added funtion to support interface IDrawable
-        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
-        {
-            sLeaser.RemoveAllSpritesFromContainer();
-            if (newContainer == null)
-                newContainer = rCam.ReturnFContainer("BackgroundShortcuts");
-            for (int i = 0; i < this.totalSprites; i++)
-                newContainer.AddChild(sLeaser.sprites[i]);
         }
 
 

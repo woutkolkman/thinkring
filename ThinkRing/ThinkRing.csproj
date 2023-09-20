@@ -38,6 +38,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BaseHalo.cs" />
     <Compile Include="OracleHalo.cs" />
     <Compile Include="HaloManager.cs" />
     <Compile Include="LightningBolt.cs" />
