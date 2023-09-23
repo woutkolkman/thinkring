@@ -8,17 +8,17 @@ namespace ThinkRing
     //basically a tweaked copy from the game (TempleGuardGraphics.Halo)
     public class TempleGuardHalo : BaseHalo
     {
+        public int[][] glyphs = new int[4][];
+        public float[,] lines = new float[40, 4];
+        public float[,] smallCircles = new float[10, 5];
+        public int circles = 7;
         public int firstSwapperSprite;
         public int firstLineSprite;
         public int firstSmallCircleSprite;
-        public int[][] glyphs;
         public bool[][] dirtyGlyphs;
         public float[][,] glyphPositions;
         public GlyphSwapper[] swappers;
-        public int circles = 7;
         public float[,] rotation;
-        public float[,] lines;
-        public float[,] smallCircles;
         public float[,] rad;
         public float savDisruption;
         public float activity;
@@ -29,7 +29,7 @@ namespace ThinkRing
         public Vector2 lastPos;
         public bool firstUpdate = true;
         public bool deactivated = false;
-        public List<EntityID> reactedToCritters;
+        public List<EntityID> reactedToCritters = new List<EntityID>();
 
         //added to original
         float telekinesis = 0.3f;
@@ -47,7 +47,6 @@ namespace ThinkRing
             this.rad[1, 0] = 1f;
             this.rad[1, 1] = 1f;
             this.rad[1, 2] = 1f;
-            this.glyphs = new int[4][];
             this.dirtyGlyphs = new bool[this.glyphs.Length][];
             this.glyphPositions = new float[this.glyphs.Length][,];
             for (int i = 0; i < this.glyphs.Length; i++)
@@ -73,7 +72,6 @@ namespace ThinkRing
                 this.swappers[m] = new GlyphSwapper(this);
             this.totalSprites += this.swappers.Length * 3;
             this.firstLineSprite = this.totalSprites;
-            this.lines = new float[40, 4];
             for (int n = 0; n < this.lines.GetLength(0); n++)
             {
                 this.lines[n, 0] = UnityEngine.Random.value;
@@ -83,7 +81,6 @@ namespace ThinkRing
             }
             this.totalSprites += this.lines.GetLength(0);
             this.firstSmallCircleSprite = this.totalSprites;
-            this.smallCircles = new float[10, 5];
             for (int num = 0; num < this.smallCircles.GetLength(0); num++)
             {
                 this.smallCircles[num, 0] = UnityEngine.Random.value;
@@ -93,7 +90,6 @@ namespace ThinkRing
                 this.smallCircles[num, 4] = Mathf.Lerp(-1f, 1f, UnityEngine.Random.value);
             }
             this.totalSprites += this.smallCircles.GetLength(0);
-            this.reactedToCritters = new List<EntityID>();
         }
 
 
@@ -125,8 +121,8 @@ namespace ThinkRing
             } else {
                 this.activity = stress;
             }
-            if (UnityEngine.Random.value < 0.01f)
-                this.ringsActive = Custom.IntClamp((int)Mathf.Lerp(2f, 9f, Mathf.Pow(stress, 0.5f)), 2, 4);
+            /*if (UnityEngine.Random.value < 0.01f)
+                this.ringsActive = Custom.IntClamp((int)Mathf.Lerp(2f, 9f, Mathf.Pow(stress, 0.5f)), 2, 4);*/
             this.lastSlowRingsActive = this.slowRingsActive;
             if (this.slowRingsActive < (float)this.ringsActive) {
                 this.slowRingsActive = Mathf.Min((float)this.ringsActive, this.slowRingsActive + 0.1f);
@@ -354,8 +350,8 @@ namespace ThinkRing
                 sLeaser.sprites[i].color = curColor;
 
             Vector2 vector = Vector2.Lerp(this.lastPos, this.pos, timeStacker);
-            float num = Mathf.InverseLerp(10f, 150f, Vector2.Distance(vector, headPos - headDir * Mathf.Lerp(200f, 
-                this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
+            float num = Mathf.InverseLerp(10f, 150f, Vector2.Distance(vector, headPos - headDir 
+                * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
             int num2 = Custom.IntClamp((int)(Mathf.Lerp(this.lastSlowRingsActive, this.slowRingsActive, timeStacker) 
                 + Mathf.Lerp(-0.4f, 0.4f, UnityEngine.Random.value) * Mathf.InverseLerp(0.01f, 0.1f, Mathf.Abs(this.lastSlowRingsActive - this.slowRingsActive))), 2, 4);
             if (UnityEngine.Random.value < num || this.deactivated)
