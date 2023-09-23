@@ -78,8 +78,6 @@ namespace ThinkRing
             }
             size = Mathf.Clamp(size, 0f, 1f); //keep size a value from 0f to 1f
 
-            //============================================== Original Code ================================================
-
             //edited connectionsFireChance
             float connectionsFireChance = suppressConnectionFires ? 0f : boltFireChance;
 

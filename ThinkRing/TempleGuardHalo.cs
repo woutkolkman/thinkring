@@ -22,7 +22,7 @@ namespace ThinkRing
         public float[,] rad;
         public float savDisruption;
         public float activity;
-        public float slowRingsActive;
+        public float slowRingsActive = 1f; //changed to 1f to gradually build halo roughly after flashAmount reached 0f
         public float lastSlowRingsActive;
         public int ringsActive = 2;
         public Vector2 pos;
@@ -35,6 +35,7 @@ namespace ThinkRing
         float telekinesis = 0.3f;
         float lastTelekin = 0.3f; //TODO track telekinesis
         float stress = 0.5f;
+        float flashAmount = 1f; //start value when created
 
 
         public TempleGuardHalo(GenericBodyPart owner) : base(owner)
@@ -103,15 +104,23 @@ namespace ThinkRing
                 (HaloManager.activeType == Options.ActivateTypes.Dragging && connectionPos == null) || //remove halo when not dragging
                 (HaloManager.activeType == Options.ActivateTypes.ToolsActive && !MouseDrag.State.activated)) //remove halo when mousedrag is not active
             {
-                this.Destroy();
-                this.deactivated = true;
-                this.room?.RemoveObject(this);
-                this.RemoveFromRoom();
-                return;
+                ringsActive = 2;
+                if (slowRingsActive <= 2f && flashAmount < 1f)
+                    flashAmount += 1f / 10f;
+                if (flashAmount >= 1f) {
+                    this.Destroy();
+                    this.deactivated = true;
+                    this.room?.RemoveObject(this);
+                    this.RemoveFromRoom();
+                    return;
+                }
+            } else {
+                ringsActive = 2; //final amount of rings active
+                //TODO make configurable
+                if (flashAmount > 0f)
+                    flashAmount -= 1f / 10f;
             }
             connectionPos = null; //reset connectionPos
-
-            //============================================== Original Code ================================================
 
             if ((owner.owner.owner as Creature).dead)
                 this.deactivated = true;
@@ -343,6 +352,7 @@ namespace ThinkRing
 
             Vector2 headPos = owner.pos; //replaced parameter with fixed value
             Vector2 headDir = new Vector2(); //replaced parameter with fixed value
+            headPos -= new Vector2(0f, 200f) * flashAmount; //makes halo flash
 
             //set color of all sprites
             Color curColor = Color.Lerp(prevColor, color, timeStacker);
