@@ -22,13 +22,7 @@ namespace ThinkRing
 
         //added to original
         public bool visibility = true;
-        public bool suppressConnectionFires = false;
-        public float noiseSuppress = 0f;
         public float size = 0f;
-        public float boltFireChance = 0.3f;
-        public int boltFireCounter = 0; //alternative to boltFireChance, a constant counter for bolt fires
-        public bool randomBoltPositions = false;
-        public bool shortestDistFromHalo = false;
 
 
         public OracleHalo(GenericBodyPart owner) : base(owner)
@@ -56,8 +50,6 @@ namespace ThinkRing
 
         public override void Update(bool eu)
         {
-            base.Update(eu);
-
             //destroy and return if owner is deleted or moves to another room
             if (owner?.owner?.owner?.slatedForDeletetion != false || 
                 this.room != owner.owner?.owner?.room || 
@@ -78,11 +70,8 @@ namespace ThinkRing
             }
             size = Mathf.Clamp(size, 0f, 1f); //keep size a value from 0f to 1f
 
-            //edited connectionsFireChance
             float connectionsFireChance = suppressConnectionFires ? 0f : boltFireChance;
-
-            //added contant bolt fire every 0.5s
-            bool fireBolt = (boltFireCounter++ % 20 == 0);
+            bool fireBolt = (boltFireCounter++ % 20 == 0); //constant bolt fire every 0.5s
 
             for (int i = 0; i < this.connections.Length; i++)
             {
@@ -95,7 +84,6 @@ namespace ThinkRing
                     Vector2 target = connectionPos.Value + Random.insideUnitCircle * 5f;
                     if (randomBoltPositions)
                         target = center + Custom.RNV() * 300f * Random.Range(0.5f, 1f);
-                    Vector2 start = center + (shortestDistFromHalo ? Custom.DirVec(center, target) : Custom.DegToVec(Random.value * 360f)) * Radius(2f, 0f) * size;
 
                     if (HaloManager.lightningType == Options.LightningTypes.Oracle) {
                         //start position is calculated when drawing lightning
@@ -104,32 +92,13 @@ namespace ThinkRing
                         if (Options.sound.Value)
                             room.PlaySound(SoundID.SS_AI_Halo_Connection_Light_Up, 0f, (1.5f * (1f - noiseSuppress)), 1f);
                     }
-                    if (HaloManager.lightningType == Options.LightningTypes.RustyMachine)
-                    {
-                        LightningBolt obj = new LightningBolt(
-                            start, target, Random.Range(0.1f, 0.3f), 
-                            Options.whiteLightning.Value ? Color.white : color, color
-                        );
-                        room.AddObject(obj);
-                        if (Options.sound.Value)
-                            room.PlaySound(SoundID.Death_Lightning_Spark_Spontaneous, 0f, (0.7f * (1f - noiseSuppress)), 1f);
-                    }
-                    if (HaloManager.lightningType == Options.LightningTypes.MoreSlugcats)
-                    {
-                        var obj = new MoreSlugcats.LightningBolt(start, target, 0, 0.2f)
-                        {
-                            intensity = 1f,
-                            lifeTime = 4f,
-                            lightningType = Custom.RGB2HSL(Options.whiteLightning.Value ? Color.white : color).x
-                        };
-                        room.AddObject(obj);
-                        if (Options.sound.Value)
-                            room.PlaySound(SoundID.Death_Lightning_Spark_Object, 0f, (0.5f * (1f - noiseSuppress)), 1f);
-                    }
                 }
                 fireBolt = false;
             }
-            connectionPos = null; //reset connectionPos
+
+            pos = Center(0f); //"pos" is unused for OracleHalo
+            radius = Radius(2f, 0f) * size; //"radius" is unused for OracleHalo
+            base.Update(eu); //alternative lightning bolts and color cycle
 
             for (int j = 0; j < this.ringRotations.GetLength(0); j++)
             {

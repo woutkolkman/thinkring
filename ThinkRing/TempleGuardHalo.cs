@@ -25,8 +25,6 @@ namespace ThinkRing
         public float slowRingsActive = 1f; //changed to 1f to gradually build halo roughly after flashAmount reached 0f
         public float lastSlowRingsActive;
         public int ringsActive = 2;
-        public Vector2 pos;
-        public Vector2 lastPos;
         public bool firstUpdate = true;
         public bool deactivated = false;
         public List<EntityID> reactedToCritters = new List<EntityID>();
@@ -96,8 +94,6 @@ namespace ThinkRing
 
         public override void Update(bool eu)
         {
-            base.Update(eu);
-
             //destroy and return if owner is deleted or moves to another room
             if (owner?.owner?.owner?.slatedForDeletetion != false || 
                 this.room != owner.owner?.owner?.room || 
@@ -120,7 +116,19 @@ namespace ThinkRing
                 if (flashAmount > 0f)
                     flashAmount -= 1f / 10f;
             }
-            connectionPos = null; //reset connectionPos
+            flashAmount = Mathf.Clamp(flashAmount, 0f, 1f); //keep flashAmount a value from 0f to 1f
+
+            //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
+            Vector2 vector = (owner.owner.owner as Creature).mainBodyChunk.pos;
+            this.pos += Vector2.ClampMagnitude(vector - this.pos, 10f);
+            this.pos = Vector2.Lerp(this.pos, vector, 0.1f);
+            if (this.firstUpdate) {
+                this.pos = vector;
+                this.lastPos = this.pos;
+                this.firstUpdate = false;
+            }
+            radius = RadAtCircle(ringsActive, 0f, 0f); //"radius" is unused for TempleGuardHalo
+            base.Update(eu); //lightning bolts and color cycle
 
             if ((owner.owner.owner as Creature).dead)
                 this.deactivated = true;
@@ -137,17 +145,6 @@ namespace ThinkRing
                 this.slowRingsActive = Mathf.Min((float)this.ringsActive, this.slowRingsActive + 0.1f);
             } else {
                 this.slowRingsActive = Mathf.Max((float)this.ringsActive, this.slowRingsActive - 0.05f);
-            }
-            //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
-            Vector2 vector = (owner.owner.owner as Creature).mainBodyChunk.pos;
-            this.lastPos = this.pos;
-            this.pos += Vector2.ClampMagnitude(vector - this.pos, 10f);
-            this.pos = Vector2.Lerp(this.pos, vector, 0.1f);
-            if (this.firstUpdate)
-            {
-                this.pos = vector;
-                this.lastPos = this.pos;
-                this.firstUpdate = false;
             }
             this.savDisruption = Mathf.InverseLerp(10f, 150f, Vector2.Distance(this.pos, vector));
             for (int i = 0; i < this.rotation.GetLength(0); i++)
