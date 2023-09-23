@@ -30,10 +30,11 @@ namespace ThinkRing
         public List<EntityID> reactedToCritters = new List<EntityID>();
 
         //added to original
-        float telekinesis = 0.3f;
-        float lastTelekin = 0.3f; //TODO track telekinesis
-        float stress = 0.5f;
-        float flashAmount = 1f; //start value when created
+        public float telekinesis = 0.3f;
+        public float lastTelekin = 0.3f; //TODO track telekinesis
+        public float stress = 0.5f;
+        public float flashAmount = 1f; //start value when created
+        public float haloLerpSpeed = 1f; //changed from 0.1f
 
 
         public TempleGuardHalo(GenericBodyPart owner) : base(owner)
@@ -118,10 +119,11 @@ namespace ThinkRing
             }
             flashAmount = Mathf.Clamp(flashAmount, 0f, 1f); //keep flashAmount a value from 0f to 1f
 
+            this.lastPos = this.pos;
             //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
             Vector2 vector = (owner.owner.owner as Creature).mainBodyChunk.pos;
             this.pos += Vector2.ClampMagnitude(vector - this.pos, 10f);
-            this.pos = Vector2.Lerp(this.pos, vector, 0.1f);
+            this.pos = Vector2.Lerp(this.pos, vector, haloLerpSpeed);
             if (this.firstUpdate) {
                 this.pos = vector;
                 this.lastPos = this.pos;

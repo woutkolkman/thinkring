@@ -45,7 +45,6 @@ namespace ThinkRing
         public override void Update(bool eu)
         {
             base.Update(eu);
-            this.lastPos = this.pos;
 
             //rgb cycle color type
             prevColor = color;
