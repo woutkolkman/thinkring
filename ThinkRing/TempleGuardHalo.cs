@@ -56,9 +56,7 @@ namespace ThinkRing
                 this.dirtyGlyphs[i] = new bool[this.glyphs[i].Length];
                 this.glyphPositions[i] = new float[this.glyphs[i].Length, 3];
                 for (int j = 0; j < this.glyphs[i].Length; j++)
-                {
                     this.glyphs[i][j] = ((UnityEngine.Random.value < 0.033333335f) ? -1 : UnityEngine.Random.Range(0, 7));
-                }
             }
             this.rotation = new float[this.circles, 2];
             for (int k = 0; k < this.rotation.GetLength(0); k++)
@@ -68,15 +66,11 @@ namespace ThinkRing
             }
             this.totalSprites = this.circles;
             for (int l = 0; l < this.glyphs.Length; l++)
-            {
                 this.totalSprites += this.glyphs[l].Length;
-            }
             this.firstSwapperSprite = firstSprite + this.totalSprites;
             this.swappers = new GlyphSwapper[3];
             for (int m = 0; m < this.swappers.Length; m++)
-            {
                 this.swappers[m] = new GlyphSwapper(this);
-            }
             this.totalSprites += this.swappers.Length * 3;
             this.firstLineSprite = this.totalSprites;
             this.lines = new float[40, 4];
@@ -126,25 +120,17 @@ namespace ThinkRing
             if ((owner.owner.owner as Creature).dead)
                 this.deactivated = true;
 
-            if (this.activity > stress)
-            {
+            if (this.activity > stress) {
                 this.activity = Mathf.Max(stress - 0.0033333334f, stress);
-            }
-            else
-            {
+            } else {
                 this.activity = stress;
             }
             if (UnityEngine.Random.value < 0.01f)
-            {
                 this.ringsActive = Custom.IntClamp((int)Mathf.Lerp(2f, 9f, Mathf.Pow(stress, 0.5f)), 2, 4);
-            }
             this.lastSlowRingsActive = this.slowRingsActive;
-            if (this.slowRingsActive < (float)this.ringsActive)
-            {
+            if (this.slowRingsActive < (float)this.ringsActive) {
                 this.slowRingsActive = Mathf.Min((float)this.ringsActive, this.slowRingsActive + 0.1f);
-            }
-            else
-            {
+            } else {
                 this.slowRingsActive = Mathf.Max((float)this.ringsActive, this.slowRingsActive - 0.05f);
             }
             //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
@@ -165,9 +151,7 @@ namespace ThinkRing
                 this.rotation[i, 0] += 0.2f / Mathf.Max(1f, this.CircumferenceAtCircle((float)i, 1f, this.savDisruption)) * ((i % 2 == 0) ? -1f : 1f) * Mathf.Lerp(this.Speed, 3f, telekinesis);
             }
             for (int j = 0; j < this.swappers.Length; j++)
-            {
                 this.swappers[j].Update();
-            }
             for (int k = 0; k < this.lines.GetLength(0); k++)
             {
                 this.lines[k, 1] = this.lines[k, 0];
@@ -222,41 +206,24 @@ namespace ThinkRing
                     float num3 = this.RadAtCircle(this.smallCircles[num, 3] - 0.5f, 1f, this.savDisruption);
                     Vector2 p = Custom.DegToVec(this.smallCircles[num, 0] * 360f) * Mathf.Lerp(num2, num3, 0.5f);
                     for (int num4 = 0; num4 < this.glyphs.Length; num4++)
-                    {
                         for (int num5 = 0; num5 < this.glyphs[num4].Length; num5++)
-                        {
                             if (Custom.DistLess(p, this.GlyphPos(num4, num5, 1f), (num3 - num2) / 2f))
-                            {
                                 this.glyphPositions[num4][num5, 2] = 1f;
-                            }
-                        }
-                    }
                 }
             }
             int num6 = 0;
             for (int num7 = 0; num7 < this.glyphs[0].Length; num7++)
-            {
                 if (this.glyphPositions[0][num7, 0] == 1f)
-                {
                     num6++;
-                }
-            }
             if (num6 > 1)
-            {
                 for (int num8 = 0; num8 < this.glyphs[0].Length; num8++)
-                {
                     this.glyphPositions[0][num8, 0] = 0f;
-                }
-            }
             for (int num9 = 0; num9 < 2; num9++)
             {
                 this.rad[num9, 1] = this.rad[num9, 0];
-                if (this.rad[num9, 0] < this.rad[num9, 2])
-                {
+                if (this.rad[num9, 0] < this.rad[num9, 2]) {
                     this.rad[num9, 0] = Mathf.Min(this.rad[num9, 2], this.rad[num9, 0] + ((num9 == 0) ? 0.15f : 0.0035714286f));
-                }
-                else
-                {
+                } else {
                     this.rad[num9, 0] = Mathf.Max(this.rad[num9, 2], this.rad[num9, 0] - ((num9 == 0) ? 0.15f : 0.0035714286f));
                 }
                 this.rad[num9, 0] = Mathf.Lerp(this.rad[num9, 0], this.rad[num9, 2], 0.01f);
@@ -326,9 +293,7 @@ namespace ThinkRing
                 this.glyphs[num3][num4] = UnityEngine.Random.Range(0, 7);
                 this.dirtyGlyphs[num3][num4] = true;
                 if (UnityEngine.Random.value < 0.5f)
-                {
                     this.glyphPositions[num3][num4, 2] = 1f;
-                }
             }
         }
 
@@ -354,9 +319,7 @@ namespace ThinkRing
                 }
             }
             for (int l = 0; l < this.swappers.Length; l++)
-            {
                 this.swappers[l].InitiateSprites(this.firstSwapperSprite + l * 3, sLeaser, rCam);
-            }
             for (int m = 0; m < this.lines.GetLength(0); m++)
             {
                 sLeaser.sprites[this.firstSprite + this.firstLineSprite + m] = new FSprite("pixel", true);
@@ -390,15 +353,11 @@ namespace ThinkRing
             if (UnityEngine.Random.value < num || this.deactivated)
             {
                 for (int i = this.firstSprite; i < this.firstSprite + this.totalSprites; i++)
-                {
                     sLeaser.sprites[i].isVisible = false;
-                }
                 return;
             }
             for (int j = this.firstSprite; j < this.firstSprite + this.totalSprites; j++)
-            {
                 sLeaser.sprites[j].isVisible = true;
-            }
             for (int k = 0; k < this.circles; k++)
             {
                 sLeaser.sprites[this.firstSprite + k].x = vector.x - camPos.x;
@@ -434,9 +393,7 @@ namespace ThinkRing
                 }
             }
             for (int n = 0; n < this.swappers.Length; n++)
-            {
                 this.swappers[n].DrawSprites(this.firstSwapperSprite + n * 3, sLeaser, rCam, timeStacker, camPos, vector);
-            }
             for (int num5 = 0; num5 < this.lines.GetLength(0); num5++)
             {
                 float num6 = Mathf.Lerp(this.lines[num5, 1], this.lines[num5, 0], timeStacker);
@@ -474,9 +431,7 @@ namespace ThinkRing
         public Vector2 GlyphPos(int circle, int glyph, float timeStacker)
         {
             if ((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker) < 0f)
-            {
                 return new Vector2(0f, 0f);
-            }
             float num = Mathf.Lerp(this.rotation[circle, 1], this.rotation[circle, 0], timeStacker);
             return Custom.DegToVec(((float)glyph / (float)this.glyphs[circle].Length + num) * 360f) * this.RadAtCircle((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker), timeStacker, this.savDisruption);
         }
@@ -495,38 +450,27 @@ namespace ThinkRing
                 this.halo = halo;
                 this.cursors = new Cursor[2];
                 for (int i = 0; i < this.cursors.Length; i++)
-                {
                     this.cursors[i] = new Cursor(this, i);
-                }
             }
 
 
             public void Update()
             {
                 if (this.counter > 0)
-                {
                     this.counter--;
-                }
                 if (this.counter == this.switchAt)
                 {
                     int num = this.halo.glyphs[this.cursors[0].pos.x][this.cursors[0].pos.y];
                     int num2 = this.halo.glyphs[this.cursors[1].pos.x][this.cursors[1].pos.y];
-                    if (num == -1 && num2 == -1)
-                    {
+                    if (num == -1 && num2 == -1) {
                         num = UnityEngine.Random.Range(0, 7);
                         num2 = UnityEngine.Random.Range(0, 7);
-                    }
-                    else if (num == num2)
-                    {
+                    } else if (num == num2) {
                         num = -1;
                         num2 = -1;
-                    }
-                    else if (num == -1)
-                    {
+                    } else if (num == -1) {
                         num = num2;
-                    }
-                    else if (num2 == -1)
-                    {
+                    } else if (num2 == -1) {
                         num2 = num;
                     }
                     this.halo.glyphs[this.cursors[0].pos.x][this.cursors[0].pos.y] = num2;
@@ -535,9 +479,7 @@ namespace ThinkRing
                     this.halo.dirtyGlyphs[this.cursors[1].pos.x][this.cursors[1].pos.y] = true;
                 }
                 for (int i = 0; i < this.cursors.Length; i++)
-                {
                     this.cursors[i].Update();
-                }
             }
 
 
@@ -597,8 +539,7 @@ namespace ThinkRing
                 public void Update()
                 {
                     this.lastProg = this.prog;
-                    if (this.nextPos == this.pos)
-                    {
+                    if (this.nextPos == this.pos) {
                         if (UnityEngine.Random.value < this.owner.halo.Speed / 10f && this.owner.halo.glyphPositions[this.pos.x][this.pos.y, 0] == 1f && this.pos.x > 0)
                         {
                             this.owner.halo.glyphs[this.pos.x][this.pos.y] = UnityEngine.Random.Range(0, 7);
@@ -611,9 +552,7 @@ namespace ThinkRing
                             this.prog = 0f;
                             return;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         this.prog += 5f * Mathf.Lerp(this.owner.halo.Speed, 1f, 0.7f) / Mathf.Max(1f, Vector2.Distance(this.owner.halo.GlyphPos(this.pos.x, this.pos.y, 1f), this.owner.halo.GlyphPos(this.nextPos.x, this.nextPos.y, 1f)));
                         if (this.prog >= 1f)
                         {
@@ -622,9 +561,7 @@ namespace ThinkRing
                             this.owner.counter = (int)(Mathf.Lerp(10f, 70f, UnityEngine.Random.value) / this.owner.halo.Speed);
                             this.owner.switchAt = this.owner.counter / 2;
                             if (UnityEngine.Random.value < 0.5f && this.owner.halo.glyphs[this.pos.x][this.pos.y] > -1 && this.pos.y > 0)
-                            {
                                 this.owner.halo.glyphPositions[this.pos.x][this.pos.y, 0] = 1f - this.owner.halo.glyphPositions[this.pos.x][this.pos.y, 0];
-                            }
                         }
                     }
                 }
