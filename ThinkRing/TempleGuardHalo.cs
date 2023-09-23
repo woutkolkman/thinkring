@@ -8,7 +8,6 @@ namespace ThinkRing
     //basically a tweaked copy from the game (TempleGuardGraphics.Halo)
     public class TempleGuardHalo : BaseHalo
     {
-        public GenericBodyPart owner; //determines position of halo
         public int firstSwapperSprite;
         public int firstLineSprite;
         public int firstSmallCircleSprite;
@@ -36,13 +35,10 @@ namespace ThinkRing
         float telekinesis = 0.3f;
         float lastTelekin = 0.3f; //TODO track telekinesis
         float stress = 0.5f;
-        public Vector2? connectionPos = null;
-        public Color color = Color.white;
 
 
-        public TempleGuardHalo(GenericBodyPart owner) : base()
+        public TempleGuardHalo(GenericBodyPart owner) : base(owner)
         {
-            this.owner = owner;
             this.firstSprite = 0;
             this.rad = new float[2, 3];
             this.rad[0, 0] = 0f;
@@ -339,6 +335,7 @@ namespace ThinkRing
 
         public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
+            base.InitiateSprites(sLeaser, rCam);
             sLeaser.sprites = new FSprite[this.totalSprites]; //added initializer, because templeguard sprite leaser does not exist
             for (int i = 0; i < this.circles; i++)
             {
@@ -377,8 +374,15 @@ namespace ThinkRing
 
         public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
+            base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
+
             Vector2 headPos = owner.pos; //replaced parameter with fixed value
             Vector2 headDir = new Vector2(); //replaced parameter with fixed value
+
+            //set color of all sprites
+            Color curColor = Color.Lerp(prevColor, color, timeStacker);
+            for (int i = firstSprite; i < firstSprite + totalSprites; i++)
+                sLeaser.sprites[i].color = curColor;
 
             Vector2 vector = Vector2.Lerp(this.lastPos, this.pos, timeStacker);
             float num = Mathf.InverseLerp(10f, 150f, Vector2.Distance(vector, headPos - headDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
