@@ -148,7 +148,8 @@ namespace ThinkRing
             for (int i = 0; i < this.rotation.GetLength(0); i++)
             {
                 this.rotation[i, 1] = this.rotation[i, 0];
-                this.rotation[i, 0] += 0.2f / Mathf.Max(1f, this.CircumferenceAtCircle((float)i, 1f, this.savDisruption)) * ((i % 2 == 0) ? -1f : 1f) * Mathf.Lerp(this.Speed, 3f, telekinesis);
+                this.rotation[i, 0] += 0.2f / Mathf.Max(1f, this.CircumferenceAtCircle((float)i, 1f, this.savDisruption)) 
+                    * ((i % 2 == 0) ? -1f : 1f) * Mathf.Lerp(this.Speed, 3f, telekinesis);
             }
             for (int j = 0; j < this.swappers.Length; j++)
                 this.swappers[j].Update();
@@ -244,7 +245,9 @@ namespace ThinkRing
 
         public float RadAtCircle(float circle, float timeStacker, float disruption)
         {
-            return ((circle + 1f) * 20f + Mathf.Lerp(this.rad[0, 1], this.rad[0, 0], timeStacker) * (1f - Mathf.Lerp(lastTelekin, telekinesis, timeStacker))) * Mathf.Lerp(Mathf.Lerp(this.rad[1, 1], this.rad[1, 0], timeStacker), 0.7f, Mathf.Lerp(lastTelekin, telekinesis, timeStacker)) * Mathf.Lerp(1f, UnityEngine.Random.value * disruption, Mathf.Pow(disruption, 2f));
+            return ((circle + 1f) * 20f + Mathf.Lerp(this.rad[0, 1], this.rad[0, 0], timeStacker) * (1f - Mathf.Lerp(lastTelekin, telekinesis, timeStacker))) 
+                * Mathf.Lerp(Mathf.Lerp(this.rad[1, 1], this.rad[1, 0], timeStacker), 0.7f, Mathf.Lerp(lastTelekin, telekinesis, timeStacker)) 
+                * Mathf.Lerp(1f, UnityEngine.Random.value * disruption, Mathf.Pow(disruption, 2f));
         }
 
 
@@ -259,9 +262,11 @@ namespace ThinkRing
             get
             {
                 float b = 1.8f;
-                /*if (this.owner.guard.AI.focusCreature != null && this.owner.guard.AI.FocusCreatureMovingTowardsProtectExit && this.owner.guard.AI.focusCreature.VisualContact && this.owner.guard.AI.focusCreature.representedCreature.realizedCreature != null)
+                /*if (this.owner.guard.AI.focusCreature != null && this.owner.guard.AI.FocusCreatureMovingTowardsProtectExit 
+                    && this.owner.guard.AI.focusCreature.VisualContact && this.owner.guard.AI.focusCreature.representedCreature.realizedCreature != null)
                 {
-                    b = Custom.LerpMap(Vector2.Distance(this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.lastPos, this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.pos), 1.5f, 5f, 1.2f, 3f);
+                    b = Custom.LerpMap(Vector2.Distance(this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.lastPos, 
+                        this.owner.guard.AI.focusCreature.representedCreature.realizedCreature.mainBodyChunk.pos), 1.5f, 5f, 1.2f, 3f);
                 }*/
                 return Mathf.Lerp(0.2f, b, this.activity);
             }
@@ -270,7 +275,8 @@ namespace ThinkRing
 
         public void ReactToCreature(bool firstSpot, Tracker.CreatureRepresentation creatureRep)
         {
-            if (false /*Mathf.Abs(this.owner.guard.mainBodyChunk.pos.x - this.owner.guard.room.MiddleOfTile(creatureRep.BestGuessForPosition()).x) < 300f*/ && !this.reactedToCritters.Contains(creatureRep.representedCreature.ID))
+            if (false /*Mathf.Abs(this.owner.guard.mainBodyChunk.pos.x - this.owner.guard.room.MiddleOfTile(creatureRep.BestGuessForPosition()).x) < 300f*/ 
+                && !this.reactedToCritters.Contains(creatureRep.representedCreature.ID))
             {
                 this.ringsActive = Math.Max(this.ringsActive, UnityEngine.Random.Range(3, 5));
                 this.rad[0, 2] = ((UnityEngine.Random.value > this.activity) ? 0f : ((float)UnityEngine.Random.Range(-1, 3) * 20f));
@@ -348,8 +354,10 @@ namespace ThinkRing
                 sLeaser.sprites[i].color = curColor;
 
             Vector2 vector = Vector2.Lerp(this.lastPos, this.pos, timeStacker);
-            float num = Mathf.InverseLerp(10f, 150f, Vector2.Distance(vector, headPos - headDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
-            int num2 = Custom.IntClamp((int)(Mathf.Lerp(this.lastSlowRingsActive, this.slowRingsActive, timeStacker) + Mathf.Lerp(-0.4f, 0.4f, UnityEngine.Random.value) * Mathf.InverseLerp(0.01f, 0.1f, Mathf.Abs(this.lastSlowRingsActive - this.slowRingsActive))), 2, 4);
+            float num = Mathf.InverseLerp(10f, 150f, Vector2.Distance(vector, headPos - headDir * Mathf.Lerp(200f, 
+                this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
+            int num2 = Custom.IntClamp((int)(Mathf.Lerp(this.lastSlowRingsActive, this.slowRingsActive, timeStacker) 
+                + Mathf.Lerp(-0.4f, 0.4f, UnityEngine.Random.value) * Mathf.InverseLerp(0.01f, 0.1f, Mathf.Abs(this.lastSlowRingsActive - this.slowRingsActive))), 2, 4);
             if (UnityEngine.Random.value < num || this.deactivated)
             {
                 for (int i = this.firstSprite; i < this.firstSprite + this.totalSprites; i++)
@@ -387,7 +395,8 @@ namespace ThinkRing
                     }
                     else
                     {
-                        sLeaser.sprites[this.firstSprite + num4].rotation = ((float)m / (float)this.glyphs[l].Length + Mathf.Lerp(this.rotation[l, 1], this.rotation[l, 0], timeStacker)) * 360f;
+                        sLeaser.sprites[this.firstSprite + num4].rotation = ((float)m / (float)this.glyphs[l].Length 
+                            + Mathf.Lerp(this.rotation[l, 1], this.rotation[l, 0], timeStacker)) * 360f;
                     }
                     num4++;
                 }
@@ -402,7 +411,8 @@ namespace ThinkRing
                 if (UnityEngine.Random.value > num || UnityEngine.Random.value > 0.25f)
                 {
                     sLeaser.sprites[this.firstSprite + this.firstLineSprite + num5].rotation = num6 * 360f;
-                    sLeaser.sprites[this.firstSprite + this.firstLineSprite + num5].scaleY = this.RadAtCircle(this.lines[num5, 2] - 0.5f, timeStacker, num) - this.RadAtCircle(this.lines[num5, 2] + 0.5f, timeStacker, num);
+                    sLeaser.sprites[this.firstSprite + this.firstLineSprite + num5].scaleY = this.RadAtCircle(this.lines[num5, 2] - 0.5f, timeStacker, num) 
+                        - this.RadAtCircle(this.lines[num5, 2] + 0.5f, timeStacker, num);
                 }
                 else
                 {
@@ -433,7 +443,9 @@ namespace ThinkRing
             if ((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker) < 0f)
                 return new Vector2(0f, 0f);
             float num = Mathf.Lerp(this.rotation[circle, 1], this.rotation[circle, 0], timeStacker);
-            return Custom.DegToVec(((float)glyph / (float)this.glyphs[circle].Length + num) * 360f) * this.RadAtCircle((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker), timeStacker, this.savDisruption);
+            return Custom.DegToVec(((float)glyph / (float)this.glyphs[circle].Length + num) * 360f) 
+                * this.RadAtCircle((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], 
+                this.glyphPositions[circle][glyph, 0], timeStacker), timeStacker, this.savDisruption);
         }
 
 
@@ -545,7 +557,8 @@ namespace ThinkRing
                             this.owner.halo.glyphs[this.pos.x][this.pos.y] = UnityEngine.Random.Range(0, 7);
                             this.owner.halo.dirtyGlyphs[this.pos.x][this.pos.y] = true;
                         }
-                        if ((this.owner.counter == 0 && UnityEngine.Random.value < this.owner.halo.Speed / 40f && this.owner.cursors[1 - this.num].prog == 1f) || this.pos.x >= this.owner.halo.ringsActive)
+                        if ((this.owner.counter == 0 && UnityEngine.Random.value < this.owner.halo.Speed / 40f 
+                            && this.owner.cursors[1 - this.num].prog == 1f) || this.pos.x >= this.owner.halo.ringsActive)
                         {
                             this.nextPos = this.RandomGlyphPos();
                             this.lastProg = 0f;
@@ -553,7 +566,8 @@ namespace ThinkRing
                             return;
                         }
                     } else {
-                        this.prog += 5f * Mathf.Lerp(this.owner.halo.Speed, 1f, 0.7f) / Mathf.Max(1f, Vector2.Distance(this.owner.halo.GlyphPos(this.pos.x, this.pos.y, 1f), this.owner.halo.GlyphPos(this.nextPos.x, this.nextPos.y, 1f)));
+                        this.prog += 5f * Mathf.Lerp(this.owner.halo.Speed, 1f, 0.7f) / Mathf.Max(1f, Vector2.Distance(this.owner.halo.GlyphPos(this.pos.x, this.pos.y, 1f), 
+                            this.owner.halo.GlyphPos(this.nextPos.x, this.nextPos.y, 1f)));
                         if (this.prog >= 1f)
                         {
                             this.pos = this.nextPos;
@@ -569,8 +583,10 @@ namespace ThinkRing
 
                 public Vector2 CursorPos(float timeStacker)
                 {
-                    Vector2 a = Vector2.Lerp(this.owner.halo.GlyphPos(this.pos.x, this.pos.y, timeStacker), this.owner.halo.GlyphPos(this.nextPos.x, this.nextPos.y, timeStacker), Mathf.Lerp(this.lastProg, this.prog, timeStacker));
-                    Vector2 b = Vector3.Slerp(this.owner.halo.GlyphPos(this.pos.x, this.pos.y, timeStacker), this.owner.halo.GlyphPos(this.nextPos.x, this.nextPos.y, timeStacker), Mathf.Lerp(this.lastProg, this.prog, timeStacker));
+                    Vector2 a = Vector2.Lerp(this.owner.halo.GlyphPos(this.pos.x, this.pos.y, timeStacker), 
+                        this.owner.halo.GlyphPos(this.nextPos.x, this.nextPos.y, timeStacker), Mathf.Lerp(this.lastProg, this.prog, timeStacker));
+                    Vector2 b = Vector3.Slerp(this.owner.halo.GlyphPos(this.pos.x, this.pos.y, timeStacker), 
+                        this.owner.halo.GlyphPos(this.nextPos.x, this.nextPos.y, timeStacker), Mathf.Lerp(this.lastProg, this.prog, timeStacker));
                     return Vector2.Lerp(a, b, 0.5f);
                 }
 

@@ -59,7 +59,7 @@ namespace ThinkRing
             base.Update(eu);
 
             //destroy and return if owner is deleted or moves to another room
-            if (owner.owner?.owner?.slatedForDeletetion != false || 
+            if (owner?.owner?.owner?.slatedForDeletetion != false || 
                 this.room != owner.owner?.owner?.room || 
                 (HaloManager.activeType == Options.ActivateTypes.Dragging && connectionPos == null) || //remove halo when not dragging
                 (HaloManager.activeType == Options.ActivateTypes.ToolsActive && !MouseDrag.State.activated)) //remove halo when mousedrag is not active
