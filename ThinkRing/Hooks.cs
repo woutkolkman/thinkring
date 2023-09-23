@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using MonoMod.RuntimeDetour;
-using System.Runtime.CompilerServices;
-using UnityEngine;
 
 namespace ThinkRing
 {
@@ -12,6 +8,9 @@ namespace ThinkRing
         {
             //initialize options & load sprites
             On.RainWorld.OnModsInit += RainWorldOnModsInitHook;
+
+            //preset correct options
+            On.RainWorld.PostModsInit += RainWorldPostModsInitHook;
 
             //at tickrate
             On.RainWorldGame.Update += RainWorldGameUpdateHook;
@@ -29,6 +28,24 @@ namespace ThinkRing
         {
             orig(self);
             MachineConnector.SetRegisteredOI(Plugin.GUID, new Options());
+        }
+
+
+        //preset correct options
+        static void RainWorldPostModsInitHook(On.RainWorld.orig_PostModsInit orig, RainWorld self)
+        {
+            orig(self);
+
+            //if mod runs for the first time, change Mouse Drag options
+            if (Options.hasRanBefore.Value)
+                return;
+            Options.hasRanBefore.Value = true;
+            MachineConnector.SaveConfig(MachineConnector.GetRegisteredOI(Plugin.GUID));
+            //TODO, if config is reset, this option will also be reset, and Mouse Drag option will be reset next game restart
+
+            Plugin.Logger.LogDebug("RainWorldOnModsInitHook, changing Mouse Drag options");
+            MouseDrag.Options.velocityDrag.Value = true;
+            MachineConnector.SaveConfig(MachineConnector.GetRegisteredOI(MouseDrag.Plugin.GUID));
         }
 
 

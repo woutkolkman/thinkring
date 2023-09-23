@@ -6,6 +6,7 @@ namespace ThinkRing
 {
     public class Options : OptionInterface
     {
+        public static Configurable<bool> hasRanBefore;
         public static Configurable<string> activateType, colorType, lightningType, haloType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink;
@@ -45,6 +46,7 @@ namespace ThinkRing
 
         public Options()
         {
+            hasRanBefore = config.Bind("hasRanBefore", defaultValue: false, new ConfigurableInfo(null, null, null, null));
             activateType = config.Bind("activateType", defaultValue: ActivateTypes.Dragging.ToString(), new ConfigurableInfo("Halo is visible on this condition.", null, "", "Show when"));
             colorType = config.Bind("colorType", defaultValue: ColorTypes.CharacterDarker.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
             lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo("Type of lightning bolts used.\nOracle type only works on Oracle halo.", null, "", "Lightning type"));

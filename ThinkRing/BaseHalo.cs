@@ -104,7 +104,7 @@ namespace ThinkRing
         {
             sLeaser.RemoveAllSpritesFromContainer();
             if (newContainer == null)
-                newContainer = rCam.ReturnFContainer("BackgroundShortcuts");
+                newContainer = rCam.ReturnFContainer("BackgroundShortcuts"); //TODO make multiple options
             for (int i = 0; i < this.totalSprites; i++)
                 newContainer.AddChild(sLeaser.sprites[i]);
         }
