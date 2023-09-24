@@ -33,8 +33,9 @@ namespace ThinkRing
         {
             None,
             RustyMachine,
+            MoreSlugcats,
             Oracle,
-            MoreSlugcats
+            TempleGuard
         }
 
         public enum HaloTypes
@@ -57,7 +58,7 @@ namespace ThinkRing
             hasRanBefore = config.Bind("hasRanBefore", defaultValue: false, new ConfigurableInfo(null, null, null, null));
             activateType = config.Bind("activateType", defaultValue: ActivateTypes.Dragging.ToString(), new ConfigurableInfo("Halo is visible on this condition.", null, "", "Show when"));
             colorType = config.Bind("colorType", defaultValue: ColorTypes.CharacterDarker.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
-            lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo("Type of lightning bolts used.\nOracle type only works on Oracle halo.", null, "", "Lightning type"));
+            lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo("Type of lightning bolts used.\nOracle type only works on Oracle halo. The same goes for the TempleGuard type.", null, "", "Lightning type"));
             haloType = config.Bind("haloType", defaultValue: HaloTypes.Oracle.ToString(), new ConfigurableInfo(null, null, "", "Halo type"));
             containerShaderType = config.Bind("containerShaderType", defaultValue: containerShaderTypes[0], new ConfigurableInfo(null, null, "", "Container/shader type"));
             staticHaloColor = config.Bind("staticHaloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));

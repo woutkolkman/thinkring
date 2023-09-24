@@ -17,7 +17,7 @@ namespace ThinkRing
         public int firstSmallCircleSprite;
         public bool[][] dirtyGlyphs;
         public float[][,] glyphPositions;
-        public GlyphSwapper[] swappers;
+        public GlyphSwapper[] swappers = new GlyphSwapper[3];
         public float[,] rotation;
         public float[,] rad;
         public float savDisruption;
@@ -67,7 +67,6 @@ namespace ThinkRing
             for (int l = 0; l < this.glyphs.Length; l++)
                 this.totalSprites += this.glyphs[l].Length;
             this.firstSwapperSprite = firstSprite + this.totalSprites;
-            this.swappers = new GlyphSwapper[3];
             for (int m = 0; m < this.swappers.Length; m++)
                 this.swappers[m] = new GlyphSwapper(this);
             this.totalSprites += this.swappers.Length * 3;
@@ -129,6 +128,10 @@ namespace ThinkRing
                 this.firstUpdate = false;
             }
             radius = RadAtCircle(ringsActive, 0f, 0f); //"radius" is unused for TempleGuardHalo
+
+            for (int j = 0; j < this.swappers.Length; j++) //moved before base.Update so swappers can read connectionPos
+                this.swappers[j].Update();
+
             base.Update(eu); //lightning bolts and color cycle
 
             if ((owner.owner.owner as Creature).dead)
@@ -154,8 +157,6 @@ namespace ThinkRing
                 this.rotation[i, 0] += 0.2f / Mathf.Max(1f, this.CircumferenceAtCircle((float)i, 1f, this.savDisruption)) 
                     * ((i % 2 == 0) ? -1f : 1f) * Mathf.Lerp(this.Speed, 3f, telekinesis);
             }
-            for (int j = 0; j < this.swappers.Length; j++)
-                this.swappers[j].Update();
             for (int k = 0; k < this.lines.GetLength(0); k++)
             {
                 this.lines[k, 1] = this.lines[k, 0];
@@ -175,12 +176,9 @@ namespace ThinkRing
                     {
                         if (UnityEngine.Random.value < 0.033333335f && this.glyphPositions[m][n, 0] == 0f && this.glyphs[m][n] > -1)
                         {
-                            if (m == this.glyphs.Length - 1)
-                            {
+                            if (m == this.glyphs.Length - 1) {
                                 this.glyphPositions[m][n, 0] = -1f;
-                            }
-                            else if (m == this.glyphs.Length - 2 && this.ringsActive == 4)
-                            {
+                            } else if (m == this.glyphs.Length - 2 && this.ringsActive == 4) {
                                 this.glyphPositions[m][n, 0] = -3f;
                             }
                         }
@@ -444,6 +442,10 @@ namespace ThinkRing
 
         public Vector2 GlyphPos(int circle, int glyph, float timeStacker)
         {
+            //added to hide a connection position for a cursor behind the grabbed object
+            if (HaloManager.lightningType == Options.LightningTypes.TempleGuard && circle == 0 && glyph == 0 && connectionPos != null)
+                return connectionPos.Value - this.pos;
+
             if ((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker) < 0f)
                 return new Vector2(0f, 0f);
             float num = Mathf.Lerp(this.rotation[circle, 1], this.rotation[circle, 0], timeStacker);
@@ -598,6 +600,11 @@ namespace ThinkRing
                 public IntVector2 RandomGlyphPos()
                 {
                     IntVector2 intVector = new IntVector2(0, 0);
+
+                    //added force first glyph
+                    if (HaloManager.lightningType == Options.LightningTypes.TempleGuard && owner.halo.connectionPos != null && num == 0)
+                        return intVector;
+
                     intVector.x = UnityEngine.Random.Range(0, this.owner.halo.ringsActive);
                     intVector.y = UnityEngine.Random.Range(0, this.owner.halo.glyphs[intVector.x].Length);
                     return intVector;
