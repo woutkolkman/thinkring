@@ -9,7 +9,7 @@ namespace ThinkRing
         public static Configurable<bool> hasRanBefore;
         public static Configurable<string> activateType, colorType, lightningType, haloType;
         public static Configurable<Color> staticHaloColor;
-        public static Configurable<bool> whiteLightning, sound, blink;
+        public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
         public static Configurable<float> rgbCycleSpeed;
         public static Configurable<int> maxTempleGuardRings;
         public int curTab;
@@ -56,6 +56,7 @@ namespace ThinkRing
             whiteLightning = config.Bind("whiteLightning", defaultValue: true, new ConfigurableInfo("Uncheck to make lightning the same color as the halo itself.", null, "", "White lightning"));
             sound = config.Bind("sound", defaultValue: true, new ConfigurableInfo("Uncheck to mute lightning.", null, "", "Sound"));
             blink = config.Bind("blink", defaultValue: true, new ConfigurableInfo("Slugcat closes eyes when dragging things with your mouse.", null, "", "Blink"));
+            boltsHitYourself = config.Bind("boltsHitYourself", defaultValue: false, new ConfigurableInfo("When drawing yourself through the air, bolts will hit yourself instead of random points around the halo.", null, "", "Bolts hit yourself"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
             maxTempleGuardRings = config.Bind("maxTempleGuardRings", defaultValue: 2, new ConfigurableInfo("Max amount of rings for TempleGuard halo [2..4].", new ConfigAcceptableRange<int>(2, 4), "", "Max rings"));
         }
@@ -90,6 +91,7 @@ namespace ThinkRing
             AddComboBox(lightningType, new Vector2(l, y - 80f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
             AddComboBox(haloType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Left, width: 120f);
             AddTextBox(maxTempleGuardRings, new Vector2(r, y));
+            AddCheckbox(boltsHitYourself, new Vector2(r, y -= 40f));
         }
 
 

@@ -43,8 +43,10 @@
                     (creature as Player)?.Blink(30);
 
                 halo.connectionPos = MouseDrag.Drag.dragChunk?.pos;
-                halo.randomBoltPositions = MouseDrag.Drag.dragChunk?.owner == creature;
-                halo.shortestDistFromHalo = MouseDrag.Drag.dragChunk?.owner == creature;
+                if (!Options.boltsHitYourself.Value) {
+                    halo.randomBoltPositions = MouseDrag.Drag.dragChunk?.owner == creature;
+                    halo.shortestDistFromHalo = MouseDrag.Drag.dragChunk?.owner == creature;
+                }
 
                 if (halo.slatedForDeletetion || halo.room != creature?.room)
                     halo = null;
