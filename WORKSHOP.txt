@@ -1,4 +1,4 @@
-Adds two halos inspired by the Psychic from Rusty Machine (1.5 mod). Dragging things with your mouse will make lightning apprear. You can throw bombs and spears, throw creatures, or drag yourself through the air.
+Adds two halos inspired by the Psychic from Rusty Machine (1.5 mod). Dragging things with your mouse will make lightning apprear. You can throw bombs and spears, throw creatures, or drag yourself through the air. The halo should work with any scug. The lightning bolts are cosmetic only and cause no damage.
 
 Credits:
 - gruntonium - Art, Idea & Playtesting
