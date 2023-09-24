@@ -7,7 +7,7 @@ namespace ThinkRing
     public class Options : OptionInterface
     {
         public static Configurable<bool> hasRanBefore;
-        public static Configurable<string> activateType, colorType, lightningType, haloType;
+        public static Configurable<string> activateType, colorType, lightningType, haloType, containerShaderType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
         public static Configurable<float> rgbCycleSpeed;
@@ -44,6 +44,13 @@ namespace ThinkRing
             TempleGuard
         }
 
+        public static string[] containerShaderTypes = new string[]
+        {
+            "BackgroundShortcuts",
+            "HUD",
+            "Hologram"
+        };
+
 
         public Options()
         {
@@ -52,11 +59,12 @@ namespace ThinkRing
             colorType = config.Bind("colorType", defaultValue: ColorTypes.CharacterDarker.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
             lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo("Type of lightning bolts used.\nOracle type only works on Oracle halo.", null, "", "Lightning type"));
             haloType = config.Bind("haloType", defaultValue: HaloTypes.Oracle.ToString(), new ConfigurableInfo(null, null, "", "Halo type"));
+            containerShaderType = config.Bind("containerShaderType", defaultValue: containerShaderTypes[0], new ConfigurableInfo(null, null, "", "Container/shader type"));
             staticHaloColor = config.Bind("staticHaloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
             whiteLightning = config.Bind("whiteLightning", defaultValue: true, new ConfigurableInfo("Uncheck to make lightning the same color as the halo itself.", null, "", "White lightning"));
             sound = config.Bind("sound", defaultValue: true, new ConfigurableInfo("Uncheck to mute lightning.", null, "", "Sound"));
             blink = config.Bind("blink", defaultValue: true, new ConfigurableInfo("Slugcat closes eyes when dragging things with your mouse.", null, "", "Blink"));
-            boltsHitYourself = config.Bind("boltsHitYourself", defaultValue: false, new ConfigurableInfo("When drawing yourself through the air, bolts will hit yourself instead of random points around the halo.", null, "", "Bolts hit yourself"));
+            boltsHitYourself = config.Bind("boltsHitYourself", defaultValue: false, new ConfigurableInfo("When dragging yourself through the air, bolts will hit yourself instead of random points around the halo.", null, "", "Bolts hit yourself"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
             maxTempleGuardRings = config.Bind("maxTempleGuardRings", defaultValue: 2, new ConfigurableInfo("Max amount of rings for TempleGuard halo [2..4].", new ConfigAcceptableRange<int>(2, 4), "", "Max rings"));
         }
@@ -77,19 +85,20 @@ namespace ThinkRing
 
             float y = 533f;
             float l = 140f, r = 340f;
-            AddComboBox(activateType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 120f);
-            AddCheckbox(whiteLightning, new Vector2(r, y));
-            AddCheckbox(sound, new Vector2(r, y -= 40f));
+            AddComboBox(activateType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 150f);
+            AddCheckbox(sound, new Vector2(r, y));
             AddCheckbox(blink, new Vector2(r, y -= 40f));
             AddDivider(y -= 10f);
 
-            AddComboBox(colorType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddComboBox(colorType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddColorPicker(staticHaloColor, new Vector2(r, y -= (150f - 24f)));
             AddTextBox(rgbCycleSpeed, new Vector2(r, y -= 40f));
+            AddCheckbox(whiteLightning, new Vector2(l, y));
             AddDivider(y -= 10f);
 
-            AddComboBox(lightningType, new Vector2(l, y - 80f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 120f);
-            AddComboBox(haloType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Left, width: 120f);
+            AddComboBox(containerShaderType, new Vector2(l, y - 120f), containerShaderTypes, alH: FLabelAlignment.Left, width: 150f);
+            AddComboBox(lightningType, new Vector2(l, y - 80f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 150f);
+            AddComboBox(haloType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddTextBox(maxTempleGuardRings, new Vector2(r, y));
             AddCheckbox(boltsHitYourself, new Vector2(r, y -= 40f));
         }
