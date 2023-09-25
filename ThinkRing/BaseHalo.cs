@@ -100,7 +100,7 @@ namespace ThinkRing
 
 
         //added funtion to support interface IDrawable
-        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
+        public virtual void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
         {
             int idx = -1;
             try {
@@ -124,7 +124,7 @@ namespace ThinkRing
 
 
         //added funtion to support interface IDrawable
-        public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+        public virtual void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
         {
         }
 
