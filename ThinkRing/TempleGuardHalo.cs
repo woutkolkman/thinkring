@@ -35,6 +35,7 @@ namespace ThinkRing
         public float stress = 0.5f;
         public float flashAmount = 1f; //start value when created
         public float haloLerpSpeed = 1f; //changed from 0.1f
+        public float distAboveHead = 110f; //changed from 200f
 
 
         public TempleGuardHalo(GenericBodyPart owner) : base(owner)
@@ -118,8 +119,13 @@ namespace ThinkRing
             flashAmount = Mathf.Clamp(flashAmount, 0f, 1f); //keep flashAmount a value from 0f to 1f
 
             this.lastPos = this.pos;
-            //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
             Vector2 vector = (owner.owner.owner as Creature).mainBodyChunk.pos;
+            if (Options.templeGuardHaloOffset.Value) {
+                Vector2 headDir = new Vector2(0f, -1f);
+                //Vector2 headDir = Custom.DirVec(owner.pos, (owner.owner.owner as Creature).mainBodyChunk.pos);
+                vector = (owner.owner.owner as Creature).mainBodyChunk.pos - headDir * Mathf.Lerp(distAboveHead, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
+                //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
+            }
             this.pos += Vector2.ClampMagnitude(vector - this.pos, 10f);
             this.pos = Vector2.Lerp(this.pos, vector, haloLerpSpeed);
             if (this.firstUpdate) {
@@ -348,6 +354,9 @@ namespace ThinkRing
 
             Vector2 headPos = owner.pos; //replaced parameter with fixed value
             Vector2 headDir = new Vector2(); //replaced parameter with fixed value
+            if (Options.templeGuardHaloOffset.Value && (owner.owner?.owner as Creature)?.mainBodyChunk != null)
+                headDir = new Vector2(0f, -1f);
+                //headDir = Custom.DirVec(owner.pos, (owner.owner.owner as Creature).mainBodyChunk.pos);
             headPos -= new Vector2(0f, 200f) * flashAmount; //makes halo flash
 
             //set color of all sprites
@@ -357,7 +366,7 @@ namespace ThinkRing
 
             Vector2 vector = Vector2.Lerp(this.lastPos, this.pos, timeStacker);
             float num = Mathf.InverseLerp(10f, 150f, Vector2.Distance(vector, headPos - headDir 
-                * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
+                * Mathf.Lerp(distAboveHead, this.RadAtCircle(2f + this.slowRingsActive * 2f, timeStacker, 0f), 0.5f)));
             int num2 = Custom.IntClamp((int)(Mathf.Lerp(this.lastSlowRingsActive, this.slowRingsActive, timeStacker) 
                 + Mathf.Lerp(-0.4f, 0.4f, UnityEngine.Random.value) * Mathf.InverseLerp(0.01f, 0.1f, Mathf.Abs(this.lastSlowRingsActive - this.slowRingsActive))), 2, 4);
             if (UnityEngine.Random.value < num || this.deactivated)
