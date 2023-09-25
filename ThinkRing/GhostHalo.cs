@@ -5,13 +5,13 @@ namespace ThinkRing
 {
     public class GhostHalo : BaseHalo
     {
-        public float prevRadius = 0f;
-        public float maxRadius = 80f;
+        public float prevRadius, maxRadius;
         public float growRate = 2f;
 
 
         public GhostHalo(GenericBodyPart owner) : base(owner)
         {
+            maxRadius = Options.maxRings.Value * 40f - 40f;
         }
 
 

@@ -111,7 +111,7 @@ namespace ThinkRing
                     return;
                 }
             } else {
-                ringsActive = Options.maxTempleGuardRings.Value; //final amount of rings active
+                ringsActive = Options.maxRings.Value; //final amount of rings active
                 if (flashAmount > 0f)
                     flashAmount -= 1f / 10f;
             }
