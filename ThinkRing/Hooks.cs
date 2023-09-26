@@ -44,8 +44,12 @@ namespace ThinkRing
             //TODO, if config is reset, this option will also be reset, and Mouse Drag option will be reset next game restart
 
             Plugin.Logger.LogDebug("RainWorldOnModsInitHook, changing Mouse Drag options");
-            MouseDrag.Options.velocityDrag.Value = true;
-            MachineConnector.SaveConfig(MachineConnector.GetRegisteredOI(MouseDrag.Plugin.GUID));
+            try {
+                MouseDrag.Options.velocityDrag.Value = true;
+                MachineConnector.SaveConfig(MachineConnector.GetRegisteredOI(MouseDrag.Plugin.GUID));
+            } catch (Exception ex) {
+                Plugin.Logger.LogError("RainWorldOnModsInitHook exception: " + ex.ToString());
+            }
         }
 
 
