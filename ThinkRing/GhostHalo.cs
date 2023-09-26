@@ -53,7 +53,7 @@ namespace ThinkRing
             base.Update(eu); //lightning bolts and color cycle
 
             //init tentacles
-            if (tentacles == null) {
+            if (tentacles == null && Options.ghostHaloTentacles.Value) {
                 tentacles = new Tentacle[4];
                 for (int i = 0; i < this.tentacles.Length; i++) {
                     tentacles[i] = new Tentacle(room, maxRadius, new Vector2?(pos));
