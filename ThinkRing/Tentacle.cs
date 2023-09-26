@@ -17,8 +17,9 @@ namespace ThinkRing
         public int activeUpdateTime;
 
 
-        public Tentacle(float length, Vector2? posB)
+        public Tentacle(Room room, float length, Vector2? posB)
         {
+            this.room = room;
             this.startSprite = 0;
             this.posB = posB;
             Random.State state = Random.state;
@@ -101,8 +102,8 @@ namespace ThinkRing
 
         public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
-            (sLeaser.sprites[this.startSprite] as TriangleMesh).isVisible = true;
-            (sLeaser.sprites[this.startSprite + 1] as TriangleMesh).isVisible = true;
+            (sLeaser.sprites[this.startSprite] as TriangleMesh).isVisible = !slatedForDeletetion; //changed from true
+            (sLeaser.sprites[this.startSprite + 1] as TriangleMesh).isVisible = !slatedForDeletetion; //changed from true
             Vector2 a = Vector2.Lerp(this.segments[0, 1], this.segments[0, 0], timeStacker);
             for (int i = 0; i < this.segments.GetLength(0); i++)
             {
@@ -132,6 +133,7 @@ namespace ThinkRing
         }
 
 
+        //unused
         public void InactiveDrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
             (sLeaser.sprites[this.startSprite] as TriangleMesh).isVisible = false;
@@ -139,6 +141,7 @@ namespace ThinkRing
         }
 
 
+        //unused
         public void InactiveUpdate()
         {
             if (this.lengthFactor <= 0.01f)
@@ -152,6 +155,7 @@ namespace ThinkRing
 
         public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
+            sLeaser.sprites = new FSprite[2]; //added initializer, because oracle sprite leaser does not exist
             sLeaser.sprites[this.startSprite] = TriangleMesh.MakeLongMesh(this.segments.GetLength(0), false, true);
             sLeaser.sprites[this.startSprite + 1] = TriangleMesh.MakeLongMesh(this.segments.GetLength(0), false, false);
             sLeaser.sprites[this.startSprite + 1].shader = rCam.room.game.rainWorld.Shaders["GhostSkin"];
@@ -190,7 +194,7 @@ namespace ThinkRing
         }
 
 
-        public void Update()
+        public override void Update(bool eu) //changed to override
         {
             if (this.room == null)
                 return;

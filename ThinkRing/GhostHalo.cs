@@ -7,6 +7,7 @@ namespace ThinkRing
     {
         public float prevRadius, maxRadius;
         public float growRate = 2f;
+        public Tentacle[] tentacles = null;
 
 
         public GhostHalo(GenericBodyPart owner) : base(owner)
@@ -42,6 +43,33 @@ namespace ThinkRing
             this.lastPos = this.pos;
             pos = owner.pos;
             base.Update(eu); //lightning bolts and color cycle
+
+            //init tentacles
+            if (tentacles == null) {
+                tentacles = new Tentacle[4];
+                for (int i = 0; i < this.tentacles.Length; i++) {
+                    tentacles[i] = new Tentacle(room, 100f, new Vector2?(pos));
+                    room.AddObject(tentacles[i]);
+                }
+            }
+
+            //update position of tentacles
+            for (int i = 0; i < tentacles.Length; i++)
+                if (tentacles[i] != null)
+                    tentacles[i].posB = pos;
+        }
+
+
+        public override void Destroy()
+        {
+            for (int i = 0; i < tentacles?.Length; i++) {
+                if (tentacles[i] != null) {
+                    tentacles[i].Destroy();
+                    room?.RemoveObject(tentacles[i]);
+                    tentacles[i].RemoveFromRoom();
+                }
+            }
+            base.Destroy();
         }
 
 

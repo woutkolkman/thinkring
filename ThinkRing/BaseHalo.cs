@@ -94,7 +94,6 @@ namespace ThinkRing
                 }
                 fireBolt = false;
             }
-
             connectionPos = null; //reset connectionPos
         }
 
