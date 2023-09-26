@@ -3,39 +3,38 @@ using RWCustom;
 
 namespace ThinkRing
 {
-    public class Tentacle
+    //basically a tweaked copy from the game (PlayerGraphics.Tentacle)
+    public class Tentacle : UpdatableAndDeletable, IDrawable
     {
         public Vector2[,] segments;
         public float conRad;
         public Vector2? posB;
         public Vector2? rootDirB;
         public int startSprite;
-        public PlayerGraphics pGraphics;
         public Vector2 wind;
         public float lengthFactor;
         public float length;
         public int activeUpdateTime;
 
 
-        public Tentacle(PlayerGraphics pGraphics, float length, Vector2? posB)
+        public Tentacle(float length, Vector2? posB)
         {
             this.startSprite = 0;
-            this.pGraphics = pGraphics;
             this.posB = posB;
             Random.State state = Random.state;
             Random.InitState((int)length);
             if (posB != null)
             {
-                IntVector2 tilePosition = pGraphics.player.room.GetTilePosition(posB.Value);
+                IntVector2 tilePosition = room.GetTilePosition(posB.Value);
                 for (int i = 0; i < 4; i++)
                 {
-                    if (pGraphics.player.room.GetTile(tilePosition + Custom.fourDirections[i]).Solid)
+                    if (room.GetTile(tilePosition + Custom.fourDirections[i]).Solid)
                     {
                         this.rootDirB = new Vector2?(-Custom.fourDirections[i].ToVector2());
                         if (Custom.fourDirections[i].x == 0) {
-                            posB = new Vector2?(new Vector2(posB.Value.x, pGraphics.player.room.MiddleOfTile(tilePosition).y - this.rootDirB.Value.y * 20f));
+                            posB = new Vector2?(new Vector2(posB.Value.x, room.MiddleOfTile(tilePosition).y - this.rootDirB.Value.y * 20f));
                         } else {
-                            posB = new Vector2?(new Vector2(pGraphics.player.room.MiddleOfTile(tilePosition).x - this.rootDirB.Value.x * 20f, posB.Value.y));
+                            posB = new Vector2?(new Vector2(room.MiddleOfTile(tilePosition).x - this.rootDirB.Value.x * 20f, posB.Value.y));
                         }
                     }
                 }
@@ -79,6 +78,12 @@ namespace ThinkRing
             newContatiner.AddChild(sLeaser.sprites[this.startSprite]);
             sLeaser.sprites[this.startSprite + 1].RemoveFromContainer();
             newContatiner.AddChild(sLeaser.sprites[this.startSprite + 1]);
+        }
+
+
+        //added to support IDrawable
+        public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette)
+        {
         }
 
 
@@ -187,7 +192,7 @@ namespace ThinkRing
 
         public void Update()
         {
-            if (this.pGraphics.player.room == null)
+            if (this.room == null)
                 return;
             this.conRad = this.length * this.lengthFactor / (float)this.segments.GetLength(0) * 1.5f;
             this.wind += Custom.RNV() * 0.2f * Random.value;
@@ -204,21 +209,21 @@ namespace ThinkRing
                 this.segments[j, 1] = this.segments[j, 0];
                 this.segments[j, 0] += this.segments[j, 2];
                 this.segments[j, 2] *= 0.999f;
-                if (this.pGraphics.player.room.aimap != null && this.pGraphics.player.room.aimap.getAItile(this.segments[j, 0]).terrainProximity < 4)
+                if (this.room.aimap != null && this.room.aimap.getAItile(this.segments[j, 0]).terrainProximity < 4)
                 {
-                    IntVector2 tilePosition = this.pGraphics.player.room.GetTilePosition(this.segments[j, 0]);
+                    IntVector2 tilePosition = this.room.GetTilePosition(this.segments[j, 0]);
                     Vector2 a2 = new Vector2(0f, 0f);
                     for (int k = 0; k < 4; k++)
                     {
-                        if (!this.pGraphics.player.room.GetTile(tilePosition + Custom.fourDirections[k]).Solid && !this.pGraphics.player.room.aimap.getAItile(tilePosition + Custom.fourDirections[k]).narrowSpace)
+                        if (!this.room.GetTile(tilePosition + Custom.fourDirections[k]).Solid && !this.room.aimap.getAItile(tilePosition + Custom.fourDirections[k]).narrowSpace)
                         {
                             float num2 = 0f;
                             for (int l = 0; l < 4; l++)
-                                num2 += (float)this.pGraphics.player.room.aimap.getAItile(tilePosition + Custom.fourDirections[k] + Custom.fourDirections[l]).terrainProximity;
+                                num2 += (float)this.room.aimap.getAItile(tilePosition + Custom.fourDirections[k] + Custom.fourDirections[l]).terrainProximity;
                             a2 += Custom.fourDirections[k].ToVector2() * num2;
                         }
                     }
-                    this.segments[j, 2] += a2.normalized * Custom.LerpMap((float)this.pGraphics.player.room.aimap.getAItile(this.segments[j, 0]).terrainProximity, 0f, 3f, 2f, 0.2f);
+                    this.segments[j, 2] += a2.normalized * Custom.LerpMap((float)this.room.aimap.getAItile(this.segments[j, 0]).terrainProximity, 0f, 3f, 2f, 0.2f);
                 }
                 this.segments[j, 2] += this.wind * 0.005f;
                 if (num > 0.5f && this.posB != null)
