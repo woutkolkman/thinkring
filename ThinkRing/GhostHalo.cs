@@ -34,9 +34,17 @@ namespace ThinkRing
                     this.RemoveFromRoom();
                     return;
                 }
+
+                //updatetype for tentacles
+                for (int i = 0; i < tentacles?.Length; i++)
+                    tentacles[i].InactiveUpdate();
             } else {
                 if (radius < maxRadius)
                     radius += growRate;
+
+                //updatetype for tentacles
+                for (int i = 0; i < tentacles?.Length; i++)
+                    tentacles[i].ActiveUpdate();
             }
             radius = Mathf.Clamp(radius, 0f, maxRadius);
 
@@ -48,15 +56,14 @@ namespace ThinkRing
             if (tentacles == null) {
                 tentacles = new Tentacle[4];
                 for (int i = 0; i < this.tentacles.Length; i++) {
-                    tentacles[i] = new Tentacle(room, 100f, new Vector2?(pos));
+                    tentacles[i] = new Tentacle(room, maxRadius, new Vector2?(pos));
                     room.AddObject(tentacles[i]);
                 }
             }
 
             //update position of tentacles
-            for (int i = 0; i < tentacles.Length; i++)
-                if (tentacles[i] != null)
-                    tentacles[i].posB = pos;
+            for (int i = 0; i < tentacles?.Length; i++)
+                tentacles[i]?.SetPosition(pos + Custom.DegToVec(45f + 90f * (float)i) * 8f);
         }
 
 

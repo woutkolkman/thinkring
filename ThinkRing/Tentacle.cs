@@ -149,7 +149,7 @@ namespace ThinkRing
                 this.lengthFactor = 0f;
                 return;
             }
-            this.lengthFactor = Mathf.Lerp(this.lengthFactor, 0f, 0.01f);
+            this.lengthFactor = Mathf.Lerp(this.lengthFactor, 0f, 0.1f);
         }
 
 
