@@ -133,7 +133,6 @@ namespace ThinkRing
         }
 
 
-        //unused
         public void InactiveDrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
             (sLeaser.sprites[this.startSprite] as TriangleMesh).isVisible = false;
@@ -141,7 +140,6 @@ namespace ThinkRing
         }
 
 
-        //unused
         public void InactiveUpdate()
         {
             if (this.lengthFactor <= 0.01f)
