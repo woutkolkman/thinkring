@@ -137,6 +137,7 @@ namespace ThinkRing
         //added funtion to support interface IDrawable
         public virtual void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
+            sLeaser.sprites = new FSprite[0];
         }
     }
 }

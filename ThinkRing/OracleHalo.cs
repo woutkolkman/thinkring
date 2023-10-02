@@ -183,7 +183,6 @@ namespace ThinkRing
 
         public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
-            base.InitiateSprites(sLeaser, rCam);
             sLeaser.sprites = new FSprite[this.totalSprites]; //added initializer, because oracle sprite leaser does not exist
             for (int i = 0; i < 2; i++)
             {
@@ -208,7 +207,6 @@ namespace ThinkRing
 
         public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
-            base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
             Color curColor = Color.Lerp(prevColor, color, timeStacker);
 
             if (sLeaser.sprites[this.firstSprite].isVisible != visibility)

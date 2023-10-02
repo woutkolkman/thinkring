@@ -82,7 +82,6 @@ namespace ThinkRing
 
         public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
-            base.InitiateSprites(sLeaser, rCam);
             sLeaser.sprites = new FSprite[1];
             sLeaser.sprites[0] = new FSprite("Futile_White", true);
             sLeaser.sprites[0].shader = rCam.game.rainWorld.Shaders["GhostDistortion"];
@@ -92,7 +91,6 @@ namespace ThinkRing
 
         public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
-            base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
             sLeaser.sprites[0].color = color;
             sLeaser.sprites[0].isVisible = !slatedForDeletetion;
             sLeaser.sprites[0].scale = Mathf.Lerp(prevRadius, radius, timeStacker) / 6f;

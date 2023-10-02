@@ -313,7 +313,6 @@ namespace ThinkRing
 
         public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
-            base.InitiateSprites(sLeaser, rCam);
             sLeaser.sprites = new FSprite[this.totalSprites]; //added initializer, because templeguard sprite leaser does not exist
             for (int i = 0; i < this.circles; i++)
             {
@@ -350,8 +349,6 @@ namespace ThinkRing
 
         public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
-            base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
-
             Vector2 headPos = owner.pos; //replaced parameter with fixed value
             Vector2 headDir = new Vector2(); //replaced parameter with fixed value
             if (Options.templeGuardHaloOffset.Value && (owner.owner?.owner as Creature)?.mainBodyChunk != null)

@@ -26,12 +26,5 @@
             radius = 0f;
             base.Update(eu); //lightning bolts and color cycle
         }
-
-
-        public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
-        {
-            base.InitiateSprites(sLeaser, rCam);
-            sLeaser.sprites = new FSprite[0];
-        }
     }
 }
