@@ -38,7 +38,7 @@ namespace ThinkRing
         public float distAboveHead = 110f; //changed from 200f
 
 
-        public TempleGuardHalo(GenericBodyPart owner) : base(owner)
+        public TempleGuardHalo(BodyPart owner) : base(owner)
         {
             this.firstSprite = 0;
             this.rad = new float[2, 3];

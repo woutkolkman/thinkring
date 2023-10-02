@@ -10,7 +10,7 @@ namespace ThinkRing
         public Tentacle[] tentacles = null;
 
 
-        public GhostHalo(GenericBodyPart owner) : base(owner)
+        public GhostHalo(BodyPart owner) : base(owner)
         {
             maxRadius = Options.maxRings.Value * 40f - 40f;
         }
@@ -56,7 +56,7 @@ namespace ThinkRing
             if (tentacles == null && Options.ghostHaloTentacles.Value) {
                 tentacles = new Tentacle[4];
                 for (int i = 0; i < this.tentacles.Length; i++) {
-                    tentacles[i] = new Tentacle(room, maxRadius, new Vector2?(pos));
+                    tentacles[i] = new Tentacle(room, Mathf.Clamp(maxRadius, 0f, 80f), new Vector2?(pos));
                     room.AddObject(tentacles[i]);
                 }
             }

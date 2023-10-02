@@ -71,14 +71,14 @@ namespace ThinkRing
         }
 
 
-        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContatiner)
+        public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
         {
-            if (newContatiner == null)
-                newContatiner = rCam.ReturnFContainer("Midground");
+            if (newContainer == null)
+                newContainer = rCam.ReturnFContainer("Midground");
             sLeaser.sprites[this.startSprite].RemoveFromContainer();
-            newContatiner.AddChild(sLeaser.sprites[this.startSprite]);
+            newContainer.AddChild(sLeaser.sprites[this.startSprite]);
             sLeaser.sprites[this.startSprite + 1].RemoveFromContainer();
-            newContatiner.AddChild(sLeaser.sprites[this.startSprite + 1]);
+            newContainer.AddChild(sLeaser.sprites[this.startSprite + 1]);
         }
 
 
@@ -163,7 +163,7 @@ namespace ThinkRing
                 float f = (float)i / (float)((sLeaser.sprites[this.startSprite] as TriangleMesh).verticeColors.Length - 1);
                 (sLeaser.sprites[this.startSprite] as TriangleMesh).verticeColors[i] = this.MeshColor(f);
             }
-            this.AddToContainer(sLeaser, rCam, rCam.ReturnFContainer("Items"));
+            this.AddToContainer(sLeaser, rCam, rCam.ReturnFContainer("BackgroundShortcuts")); //changed from "Items"
         }
 
 

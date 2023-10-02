@@ -5,7 +5,7 @@ namespace ThinkRing
 {
     public class BaseHalo : UpdatableAndDeletable, IDrawable
     {
-        public GenericBodyPart owner; //determines position of halo
+        public BodyPart owner; //determines position of halo
         public int firstSprite = 0;
         public int totalSprites;
         public Vector2? connectionPos = null; //if not null, connections will fire
@@ -23,7 +23,7 @@ namespace ThinkRing
         public float noiseSuppress = 0f;
 
 
-        public BaseHalo(GenericBodyPart owner)
+        public BaseHalo(BodyPart owner)
         {
             this.owner = owner;
 

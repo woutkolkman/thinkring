@@ -25,7 +25,7 @@ namespace ThinkRing
         public float size = 0f;
 
 
-        public OracleHalo(GenericBodyPart owner) : base(owner)
+        public OracleHalo(BodyPart owner) : base(owner)
         {
             this.firstSprite = 0;
             this.totalSprites = 2;

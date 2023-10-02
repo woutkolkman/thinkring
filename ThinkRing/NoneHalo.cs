@@ -2,7 +2,7 @@
 {
     public class NoneHalo : BaseHalo
     {
-        public NoneHalo(GenericBodyPart owner) : base(owner)
+        public NoneHalo(BodyPart owner) : base(owner)
         {
         }
 
