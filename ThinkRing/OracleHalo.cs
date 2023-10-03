@@ -177,7 +177,7 @@ namespace ThinkRing
         public Vector2 Center(float timeStacker)
         {
             //edited to return exact head position instead of slightly above head
-            return Vector2.Lerp(this.owner.lastPos, this.owner.pos, timeStacker);
+            return Vector2.Lerp(this.owner.lastPos, this.owner.pos, timeStacker) + new Vector2(0f, Options.haloOffset.Value ? 80f : 0f);
         }
 
 

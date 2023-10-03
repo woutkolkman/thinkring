@@ -11,7 +11,7 @@ namespace ThinkRing
         public static Configurable<string> containerShaderType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
-        public static Configurable<bool> templeGuardHaloOffset, ghostHaloTentacles;
+        public static Configurable<bool> haloOffset, ghostHaloTentacles;
         public static Configurable<float> rgbCycleSpeed;
         public static Configurable<int> maxRings;
         public int curTab;
@@ -69,7 +69,7 @@ namespace ThinkRing
             sound = config.Bind("sound", defaultValue: true, new ConfigurableInfo("Uncheck to mute lightning.", null, "", "Sound"));
             blink = config.Bind("blink", defaultValue: true, new ConfigurableInfo("Slugcat closes eyes when dragging things with your mouse.", null, "", "Blink"));
             boltsHitYourself = config.Bind("boltsHitYourself", defaultValue: false, new ConfigurableInfo("When dragging yourself through the air, bolts will hit yourself instead of random points around the halo.", null, "", "Bolts hit yourself"));
-            templeGuardHaloOffset = config.Bind("templeGuardHaloOffset", defaultValue: false, new ConfigurableInfo("TempleGuard halo will be above slugcats head.", null, "", "TempleGuard halo offset"));
+            haloOffset = config.Bind("haloOffset", defaultValue: false, new ConfigurableInfo("Halo will be above slugcats head.", null, "", "Halo offset"));
             ghostHaloTentacles = config.Bind("ghostHaloTentacles", defaultValue: false, new ConfigurableInfo("Ghost halo has tentacles or rags, like an echo. They are a bit weird on the ground, because they like to avoid it.", null, "", "Ghost halo tentacles"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
             maxRings = config.Bind("maxRings", defaultValue: 2, new ConfigurableInfo("Max amount of rings in halo [2..4].", new ConfigAcceptableRange<int>(2, 4), "", "Max rings"));
@@ -107,7 +107,7 @@ namespace ThinkRing
             AddComboBox(haloType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddTextBox(maxRings, new Vector2(r, y));
             AddCheckbox(boltsHitYourself, new Vector2(r, y -= 40f));
-            AddCheckbox(templeGuardHaloOffset, new Vector2(r, y -= 40f));
+            AddCheckbox(haloOffset, new Vector2(r, y -= 40f));
             AddCheckbox(ghostHaloTentacles, new Vector2(r, y -= 40f));
         }
 

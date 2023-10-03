@@ -120,7 +120,7 @@ namespace ThinkRing
 
             this.lastPos = this.pos;
             Vector2 vector = (owner.owner.owner as Creature).mainBodyChunk.pos;
-            if (Options.templeGuardHaloOffset.Value) {
+            if (Options.haloOffset.Value) {
                 Vector2 headDir = new Vector2(0f, -1f);
                 //Vector2 headDir = Custom.DirVec(owner.pos, (owner.owner.owner as Creature).mainBodyChunk.pos);
                 vector = (owner.owner.owner as Creature).mainBodyChunk.pos - headDir * Mathf.Lerp(distAboveHead, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
@@ -351,7 +351,7 @@ namespace ThinkRing
         {
             Vector2 headPos = owner.pos; //replaced parameter with fixed value
             Vector2 headDir = new Vector2(); //replaced parameter with fixed value
-            if (Options.templeGuardHaloOffset.Value && (owner.owner?.owner as Creature)?.mainBodyChunk != null)
+            if (Options.haloOffset.Value && (owner.owner?.owner as Creature)?.mainBodyChunk != null)
                 headDir = new Vector2(0f, -1f);
                 //headDir = Custom.DirVec(owner.pos, (owner.owner.owner as Creature).mainBodyChunk.pos);
             headPos -= new Vector2(0f, 200f) * flashAmount; //makes halo flash
