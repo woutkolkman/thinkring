@@ -216,6 +216,10 @@ namespace ThinkRing
                 for (int j = 0; j < 100; j++)
                     sLeaser.sprites[this.firstBitSprite + j].isVisible = visibility;
             }
+
+            //don't show center when shader is Hologram
+            sLeaser.sprites[this.firstSprite].isVisible &= Options.containerShaderType.Value != "Hologram";
+
             Vector2 center = this.Center(timeStacker);
             for (int k = 0; k < 2; k++)
             {
