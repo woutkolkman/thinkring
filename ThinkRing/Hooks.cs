@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Reflection;
+using MonoMod.RuntimeDetour;
+using System.Runtime.CompilerServices;
+using RWCustom;
 
 namespace ThinkRing
 {
@@ -20,6 +24,12 @@ namespace ThinkRing
 
             //at new game
             On.RainWorldGame.ctor += RainWorldGameCtorHook;
+
+            //hook for kill effect
+            IDetour detourKillCreature = new Hook(
+                typeof(MouseDrag.Health).GetMethod("KillCreature", BindingFlags.Static | BindingFlags.Public),
+                typeof(Hooks).GetMethod("MouseDragHealth_KillCreature_RuntimeDetour", BindingFlags.Static | BindingFlags.Public)
+            );
         }
 
 
@@ -89,6 +99,29 @@ namespace ThinkRing
                 ", colorType: " + HaloManager.colorType.ToString() + 
                 ", lightningType: " + HaloManager.lightningType.ToString() + 
                 ", haloType: " + HaloManager.haloType.ToString());
+        }
+
+
+        //hook for kill effect
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void MouseDragHealth_KillCreature_RuntimeDetour(Action<RainWorldGame, PhysicalObject> orig, RainWorldGame game, PhysicalObject obj)
+        {
+            bool shouldPop = obj is PhysicalObject;
+            bool isAlive = (obj as Creature)?.State?.alive ?? false;
+            orig(game, obj);
+
+            if (!shouldPop || obj?.room == null)
+                return;
+            UnityEngine.Vector2 pos = (obj as Creature)?.mainBodyChunk.pos ?? obj.firstChunk.pos;
+
+            if (isAlive) {
+                obj.room.PlaySound(SoundID.Firecracker_Bang, pos, 1f, 0.75f + UnityEngine.Random.value);
+                obj.room.PlaySound(SoundID.SS_AI_Give_The_Mark_Boom, pos, 1f, 0.5f + UnityEngine.Random.value * 0.5f);
+            } else {
+                obj.room.PlaySound(SoundID.Snail_Pop, pos, 1f, 1.5f + UnityEngine.Random.value);
+            }
+            for (int n = 0; n < 20; n++)
+                obj.room.AddObject(new Spark(pos, Custom.RNV() * UnityEngine.Random.value * 40f, new UnityEngine.Color(1f, 1f, 1f), null, 30, 120));
         }
     }
 }
