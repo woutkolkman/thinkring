@@ -30,6 +30,12 @@ namespace ThinkRing
                 typeof(MouseDrag.Health).GetMethod("KillCreature", BindingFlags.Static | BindingFlags.Public),
                 typeof(Hooks).GetMethod("MouseDragHealth_KillCreature_RuntimeDetour", BindingFlags.Static | BindingFlags.Public)
             );
+
+            //hook for revive effect
+            IDetour detourReviveCreature = new Hook(
+                typeof(MouseDrag.Health).GetMethod("ReviveCreature", BindingFlags.Static | BindingFlags.Public),
+                typeof(Hooks).GetMethod("MouseDragHealth_ReviveCreature_RuntimeDetour", BindingFlags.Static | BindingFlags.Public)
+            );
         }
 
 
@@ -109,6 +115,8 @@ namespace ThinkRing
             bool shouldPop = obj is PhysicalObject;
             bool isAlive = (obj as Creature)?.State?.alive ?? false;
             orig(game, obj);
+            if (Options.saintPop.Value != true)
+                return;
 
             if (!shouldPop || obj?.room == null)
                 return;
@@ -122,6 +130,31 @@ namespace ThinkRing
             }
             for (int n = 0; n < 20; n++)
                 obj.room.AddObject(new Spark(pos, Custom.RNV() * UnityEngine.Random.value * 40f, new UnityEngine.Color(1f, 1f, 1f), null, 30, 120));
+        }
+
+
+        //hook for revive effect
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void MouseDragHealth_ReviveCreature_RuntimeDetour(Action<PhysicalObject> orig, PhysicalObject obj)
+        {
+            bool shouldPop = obj is PhysicalObject;
+            bool isAlive = (obj as Creature)?.State?.alive ?? false;
+            orig(obj);
+            if (Options.saintPop.Value != true)
+                return;
+
+            if (!shouldPop || obj?.room == null)
+                return;
+            UnityEngine.Vector2 pos = (obj as Creature)?.mainBodyChunk.pos ?? obj.firstChunk.pos;
+
+            if (!isAlive && obj is Creature) {
+                obj.room.PlaySound(SoundID.SS_AI_Give_The_Mark_Boom, pos, 1f, 1f);
+                obj.room.AddObject(new ShockWave(pos, 100f, 0.07f, 6, false));
+                for (int i = 0; i < 10; i++)
+                    obj.room.AddObject(new WaterDrip(pos, Custom.DegToVec(UnityEngine.Random.value * 360f) * UnityEngine.Mathf.Lerp(4f, 21f, UnityEngine.Random.value), false));
+            } else {
+                obj.room.PlaySound(SoundID.HUD_Pause_Game, pos, 1f, 0.5f);
+            }
         }
     }
 }
