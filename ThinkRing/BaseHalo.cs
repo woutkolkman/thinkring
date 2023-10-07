@@ -101,23 +101,13 @@ namespace ThinkRing
         //added funtion to support interface IDrawable
         public virtual void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
         {
-            int idx = -1;
-            try {
-                idx = System.Array.IndexOf(Options.containerShaderTypes, Options.containerShaderType.Value);
-            } catch { }
-
             sLeaser.RemoveAllSpritesFromContainer();
-            if (newContainer == null) {
-                if (idx == 0 || idx == 1) {
-                    newContainer = rCam.ReturnFContainer(Options.containerShaderType.Value);
-                } else {
-                    newContainer = rCam.ReturnFContainer("BackgroundShortcuts");
-                }
-            }
+            if (newContainer == null)
+                newContainer = rCam.ReturnFContainer(Options.containerType.Value);
             for (int i = 0; i < this.totalSprites; i++) {
                 newContainer.AddChild(sLeaser.sprites[i]);
-                if (idx == 2)
-                    sLeaser.sprites[i].shader = rCam.game.rainWorld.Shaders[Options.containerShaderType.Value];
+                if (Options.shaderType.Value != "None")
+                    sLeaser.sprites[i].shader = rCam.game.rainWorld.Shaders[Options.shaderType.Value];
             }
         }
 

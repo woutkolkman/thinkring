@@ -218,7 +218,7 @@ namespace ThinkRing
             }
 
             //don't show center when shader is Hologram
-            sLeaser.sprites[this.firstSprite].isVisible &= Options.containerShaderType.Value != "Hologram";
+            sLeaser.sprites[this.firstSprite].isVisible &= Options.shaderType.Value != "Hologram";
 
             Vector2 center = this.Center(timeStacker);
             for (int k = 0; k < 2; k++)

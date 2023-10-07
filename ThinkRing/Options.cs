@@ -8,7 +8,7 @@ namespace ThinkRing
     {
         public static Configurable<bool> hasRanBefore;
         public static Configurable<string> activateType, colorType, lightningType, haloType;
-        public static Configurable<string> containerShaderType;
+        public static Configurable<string> containerType, shaderType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
         public static Configurable<bool> haloOffset, ghostHaloTentacles, saintPop;
@@ -49,10 +49,15 @@ namespace ThinkRing
             Karma
         }
 
-        public static string[] containerShaderTypes = new string[]
+        public static string[] containerTypes = new string[]
         {
             "BackgroundShortcuts",
-            "HUD",
+            "HUD"
+        };
+
+        public static string[] shaderTypes = new string[]
+        {
+            "None",
             "Hologram"
         };
 
@@ -64,7 +69,8 @@ namespace ThinkRing
             colorType = config.Bind("colorType", defaultValue: ColorTypes.CharacterDarker.ToString(), new ConfigurableInfo("The color the halo is going to be.\nIf you choose Character, you might not see your slugcat's outlines at all times.", null, "", "Color type"));
             lightningType = config.Bind("lightningType", defaultValue: LightningTypes.RustyMachine.ToString(), new ConfigurableInfo("Type of lightning bolts used.\nOracle type only works on Oracle halo. The same goes for the TempleGuard type.", null, "", "Lightning type"));
             haloType = config.Bind("haloType", defaultValue: HaloTypes.Oracle.ToString(), new ConfigurableInfo(null, null, "", "Halo type"));
-            containerShaderType = config.Bind("containerShaderType", defaultValue: containerShaderTypes[0], new ConfigurableInfo(null, null, "", "Container/shader type"));
+            containerType = config.Bind(nameof(containerType), defaultValue: containerTypes[0], new ConfigurableInfo(null, null, "", "Container type"));
+            shaderType = config.Bind(nameof(shaderType), defaultValue: shaderTypes[0], new ConfigurableInfo(null, null, "", "Shader type"));
             staticHaloColor = config.Bind("staticHaloColor", defaultValue: new Color((50f/255f), 0f, (50f/255f), 1f), new ConfigurableInfo("Configured static color for halo. Black makes halo invisible, except in Pebbles' room.\nSet body color to #990099 for Psychic color.", null, "", ""));
             whiteLightning = config.Bind("whiteLightning", defaultValue: true, new ConfigurableInfo("Uncheck to make lightning the same color as the halo itself.", null, "", "White lightning"));
             sound = config.Bind("sound", defaultValue: true, new ConfigurableInfo("Uncheck to mute lightning.", null, "", "Sound"));
@@ -104,7 +110,8 @@ namespace ThinkRing
             AddCheckbox(whiteLightning, new Vector2(l, y));
             AddDivider(y -= 10f);
 
-            AddComboBox(containerShaderType, new Vector2(l, y - 120f), containerShaderTypes, alH: FLabelAlignment.Left, width: 150f);
+            AddComboBox(shaderType, new Vector2(l, y - 160f), shaderTypes, alH: FLabelAlignment.Left, width: 150f);
+            AddComboBox(containerType, new Vector2(l, y - 120f), containerTypes, alH: FLabelAlignment.Left, width: 150f);
             AddComboBox(lightningType, new Vector2(l, y - 80f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddComboBox(haloType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddTextBox(maxRings, new Vector2(r, y));
