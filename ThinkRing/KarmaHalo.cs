@@ -7,11 +7,12 @@ namespace ThinkRing
     {
         public float prevRadius, maxRadius;
         public float growRate = 2f;
+        const float spriteRadius = 134.5f; //size of sprite is 269x269
 
 
         public KarmaHalo(BodyPart owner) : base(owner)
         {
-            maxRadius = Options.maxRings.Value * 50f - 50f;
+            maxRadius = Mathf.Lerp(50f, spriteRadius, (Options.maxRings.Value - 2) / 2f);
             totalSprites = 1;
         }
 
@@ -49,8 +50,8 @@ namespace ThinkRing
         public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
             sLeaser.sprites = new FSprite[1];
-            sLeaser.sprites[0] = new FSprite("Futile_White", true);
-            sLeaser.sprites[0].shader = rCam.game.rainWorld.Shaders["LevelMelt2"];
+            sLeaser.sprites[0] = new FSprite("sprites" + System.IO.Path.DirectorySeparatorChar + "thinkring_karma", true);
+            //sLeaser.sprites[0].shader = rCam.game.rainWorld.Shaders["LevelMelt2"];
             this.AddToContainer(sLeaser, rCam, null);
         }
 
@@ -59,7 +60,7 @@ namespace ThinkRing
         {
             sLeaser.sprites[0].color = color;
             sLeaser.sprites[0].isVisible = !slatedForDeletetion;
-            sLeaser.sprites[0].scale = Mathf.Lerp(prevRadius, radius, timeStacker) / 8f;
+            sLeaser.sprites[0].scale = Mathf.Lerp(prevRadius, radius, timeStacker) / spriteRadius;
             Vector2 vector = Vector2.Lerp(lastPos, pos, timeStacker);
             sLeaser.sprites[0].x = vector.x - camPos.x;
             sLeaser.sprites[0].y = vector.y - camPos.y;

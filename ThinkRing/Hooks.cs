@@ -44,6 +44,13 @@ namespace ThinkRing
         {
             orig(self);
             MachineConnector.SetRegisteredOI(Plugin.GUID, new Options());
+
+            try {
+                Futile.atlasManager.LoadImage("sprites" + System.IO.Path.DirectorySeparatorChar + "thinkring_karma");
+            } catch (Exception ex) {
+                Plugin.Logger.LogError("RainWorldOnModsInitHook exception: " + ex.ToString());
+            }
+            Plugin.Logger.LogDebug("RainWorldOnModsInitHook, sprites loaded");
         }
 
 
