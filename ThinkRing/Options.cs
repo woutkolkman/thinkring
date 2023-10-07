@@ -46,7 +46,8 @@ namespace ThinkRing
             Oracle,
             TempleGuard,
             Ghost,
-            Karma
+            Karma,
+            KarmaSmall
         }
 
         public static string[] containerTypes = new string[]

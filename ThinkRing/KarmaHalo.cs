@@ -13,6 +13,8 @@ namespace ThinkRing
         public KarmaHalo(BodyPart owner) : base(owner)
         {
             maxRadius = Mathf.Lerp(50f, spriteRadius, (Options.maxRings.Value - 2) / 2f);
+            if (HaloManager.haloType == Options.HaloTypes.KarmaSmall)
+                maxRadius = Mathf.Lerp(12f, 33f, (Options.maxRings.Value - 2) / 2f);
             totalSprites = 1;
         }
 
@@ -50,7 +52,11 @@ namespace ThinkRing
         public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
             sLeaser.sprites = new FSprite[1];
-            sLeaser.sprites[0] = new FSprite("sprites" + System.IO.Path.DirectorySeparatorChar + "thinkring_karma", true);
+            if (HaloManager.haloType == Options.HaloTypes.KarmaSmall) {
+                sLeaser.sprites[0] = new FSprite("smallKarma9-9", true);
+            } else {
+                sLeaser.sprites[0] = new FSprite("sprites" + System.IO.Path.DirectorySeparatorChar + "thinkring_karma", true);
+            }
             this.AddToContainer(sLeaser, rCam, null);
         }
 
@@ -60,6 +66,8 @@ namespace ThinkRing
             sLeaser.sprites[0].color = color;
             sLeaser.sprites[0].isVisible = !slatedForDeletetion;
             sLeaser.sprites[0].scale = Mathf.Lerp(prevRadius, radius, timeStacker) / spriteRadius;
+            if (HaloManager.haloType == Options.HaloTypes.KarmaSmall)
+                sLeaser.sprites[0].scale = Mathf.Lerp(prevRadius, radius, timeStacker) / 22.5f; //original sprite 45x45
             Vector2 vector = Vector2.Lerp(lastPos, pos, timeStacker);
             sLeaser.sprites[0].x = vector.x - camPos.x;
             sLeaser.sprites[0].y = vector.y - camPos.y;
