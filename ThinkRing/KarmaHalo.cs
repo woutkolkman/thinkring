@@ -51,7 +51,6 @@ namespace ThinkRing
         {
             sLeaser.sprites = new FSprite[1];
             sLeaser.sprites[0] = new FSprite("sprites" + System.IO.Path.DirectorySeparatorChar + "thinkring_karma", true);
-            //sLeaser.sprites[0].shader = rCam.game.rainWorld.Shaders["LevelMelt2"];
             this.AddToContainer(sLeaser, rCam, null);
         }
 
@@ -64,12 +63,6 @@ namespace ThinkRing
             Vector2 vector = Vector2.Lerp(lastPos, pos, timeStacker);
             sLeaser.sprites[0].x = vector.x - camPos.x;
             sLeaser.sprites[0].y = vector.y - camPos.y;
-        }
-
-
-        public override void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
-        {
-            rCam.ReturnFContainer("Bloom").AddChild(sLeaser.sprites[0]);
         }
     }
 }
