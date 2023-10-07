@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BaseHalo.cs" />
+    <Compile Include="KarmaHalo.cs" />
     <Compile Include="GhostHalo.cs" />
     <Compile Include="NoneHalo.cs" />
     <Compile Include="OracleHalo.cs" />

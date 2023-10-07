@@ -3,14 +3,13 @@ using RWCustom;
 
 namespace ThinkRing
 {
-    public class GhostHalo : BaseHalo
+    public class KarmaHalo : BaseHalo
     {
         public float prevRadius, maxRadius;
         public float growRate = 2f;
-        public Tentacle[] tentacles = null;
 
 
-        public GhostHalo(BodyPart owner) : base(owner)
+        public KarmaHalo(BodyPart owner) : base(owner)
         {
             maxRadius = Options.maxRings.Value * 50f - 50f;
             totalSprites = 1;
@@ -35,49 +34,15 @@ namespace ThinkRing
                     this.RemoveFromRoom();
                     return;
                 }
-
-                //updatetype for tentacles
-                for (int i = 0; i < tentacles?.Length; i++)
-                    tentacles[i].InactiveUpdate();
             } else {
                 if (radius < maxRadius)
                     radius += growRate;
-
-                //updatetype for tentacles
-                for (int i = 0; i < tentacles?.Length; i++)
-                    tentacles[i].ActiveUpdate();
             }
             radius = Mathf.Clamp(radius, 0f, maxRadius);
 
             this.lastPos = this.pos;
             pos = owner.pos + new Vector2(0f, Options.haloOffset.Value ? 100f : 0f);
             base.Update(eu); //lightning bolts and color cycle
-
-            //init tentacles
-            if (tentacles == null && Options.ghostHaloTentacles.Value) {
-                tentacles = new Tentacle[4];
-                for (int i = 0; i < this.tentacles.Length; i++) {
-                    tentacles[i] = new Tentacle(room, Mathf.Clamp(maxRadius, 0f, 80f), new Vector2?(pos));
-                    room.AddObject(tentacles[i]);
-                }
-            }
-
-            //update position of tentacles
-            for (int i = 0; i < tentacles?.Length; i++)
-                tentacles[i]?.SetPosition(pos + Custom.DegToVec(45f + 90f * (float)i) * 8f);
-        }
-
-
-        public override void Destroy()
-        {
-            for (int i = 0; i < tentacles?.Length; i++) {
-                if (tentacles[i] != null) {
-                    tentacles[i].Destroy();
-                    room?.RemoveObject(tentacles[i]);
-                    tentacles[i].RemoveFromRoom();
-                }
-            }
-            base.Destroy();
         }
 
 
@@ -85,7 +50,7 @@ namespace ThinkRing
         {
             sLeaser.sprites = new FSprite[1];
             sLeaser.sprites[0] = new FSprite("Futile_White", true);
-            sLeaser.sprites[0].shader = rCam.game.rainWorld.Shaders["GhostDistortion"];
+            sLeaser.sprites[0].shader = rCam.game.rainWorld.Shaders["LevelMelt2"];
             this.AddToContainer(sLeaser, rCam, null);
         }
 

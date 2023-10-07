@@ -45,7 +45,8 @@ namespace ThinkRing
             None,
             Oracle,
             TempleGuard,
-            Ghost
+            Ghost,
+            Karma
         }
 
         public static string[] containerShaderTypes = new string[]

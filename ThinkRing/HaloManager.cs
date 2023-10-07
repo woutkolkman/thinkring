@@ -36,6 +36,8 @@
                     halo = new TempleGuardHalo(head);
                 if (haloType == Options.HaloTypes.Ghost)
                     halo = new GhostHalo(head);
+                if (haloType == Options.HaloTypes.Karma)
+                    halo = new KarmaHalo(head);
                 if (haloType == Options.HaloTypes.None)
                     halo = new NoneHalo(head); //allows lighning shards
                 if (halo != null)
