@@ -6,6 +6,7 @@ namespace ThinkRing
     {
         public int moonSigilSprite, fadeSprite, totalSprites = 0;
         public Vector2 pos, lastPos;
+        public float alpha;
 
 
         public MoonSigil()
@@ -39,13 +40,13 @@ namespace ThinkRing
 
             sLeaser.sprites[moonSigilSprite].color = new Color(0.12156863f, 0.28627452f, 0.48235294f);
             sLeaser.sprites[moonSigilSprite].x = vector.x - camPos.x;
-            sLeaser.sprites[moonSigilSprite].x = vector.y + 12f - camPos.y;
-            sLeaser.sprites[moonSigilSprite].alpha = 1f;
+            sLeaser.sprites[moonSigilSprite].y = vector.y + 12f - camPos.y;
+            sLeaser.sprites[moonSigilSprite].alpha = alpha;
 
             sLeaser.sprites[fadeSprite].color = new Color(0f, 0f, 1f);
             sLeaser.sprites[fadeSprite].x = vector.x - camPos.x;
-            sLeaser.sprites[fadeSprite].x = vector.y - camPos.y;
-            sLeaser.sprites[fadeSprite].alpha = 0.2f;
+            sLeaser.sprites[fadeSprite].y = vector.y - camPos.y;
+            sLeaser.sprites[fadeSprite].alpha = 0.2f * alpha;
         }
 
 

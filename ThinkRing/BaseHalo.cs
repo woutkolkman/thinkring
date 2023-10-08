@@ -41,7 +41,8 @@ namespace ThinkRing
                 color = Color.red; //start color
             prevColor = color;
 
-            moonSigil = new MoonSigil();
+            if (Options.moonSigil.Value)
+                moonSigil = new MoonSigil();
         }
 
 
@@ -116,6 +117,7 @@ namespace ThinkRing
                     room.AddObject(moonSigil);
                 moonSigil.pos = pos;
                 moonSigil.lastPos = lastPos;
+                moonSigil.alpha = Mathf.Clamp(radius / 20f, 0f, 1f);
             }
         }
 

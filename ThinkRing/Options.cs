@@ -11,7 +11,7 @@ namespace ThinkRing
         public static Configurable<string> containerType, shaderType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
-        public static Configurable<bool> haloOffset, ghostHaloTentacles, saintPop;
+        public static Configurable<bool> haloOffset, ghostHaloTentacles, saintPop, moonSigil;
         public static Configurable<float> rgbCycleSpeed;
         public static Configurable<int> maxRings;
         public int curTab;
@@ -80,6 +80,7 @@ namespace ThinkRing
             haloOffset = config.Bind("haloOffset", defaultValue: false, new ConfigurableInfo("Halo will be above slugcats head.", null, "", "Halo offset"));
             ghostHaloTentacles = config.Bind("ghostHaloTentacles", defaultValue: false, new ConfigurableInfo("Ghost halo has tentacles or rags, like an echo. They are a bit weird on the ground, because they like to avoid it.", null, "", "Ghost halo tentacles"));
             saintPop = config.Bind(nameof(saintPop), defaultValue: true, new ConfigurableInfo("When using kill/revive tools, special effects are used similar to Saint's ability.", null, "", "Saint pop"));
+            moonSigil = config.Bind(nameof(moonSigil), defaultValue: false, new ConfigurableInfo("Adds that one sprite that's behind Spearmaster's Moon puppet.", null, "", "Moon sigil"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
             maxRings = config.Bind("maxRings", defaultValue: 2, new ConfigurableInfo("Max amount of rings in halo [2..4].", new ConfigAcceptableRange<int>(2, 4), "", "Max rings"));
         }
@@ -120,6 +121,7 @@ namespace ThinkRing
             AddCheckbox(haloOffset, new Vector2(r, y -= 40f));
             AddCheckbox(ghostHaloTentacles, new Vector2(r, y -= 40f));
             AddCheckbox(saintPop, new Vector2(r, y -= 40f));
+            AddCheckbox(moonSigil, new Vector2(r, y -= 40f));
         }
 
 
