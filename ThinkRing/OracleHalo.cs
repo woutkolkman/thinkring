@@ -97,7 +97,7 @@ namespace ThinkRing
             }
 
             this.lastPos = this.pos;
-            pos = Center(0f); //"pos" is unused for OracleHalo
+            pos = Center(1f); //"pos" is unused for OracleHalo
             radius = Radius(2f, 0f) * size; //"radius" is unused for OracleHalo
             base.Update(eu); //alternative lightning bolts and color cycle
 
