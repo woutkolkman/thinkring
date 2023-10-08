@@ -41,6 +41,7 @@
     <Compile Include="BaseHalo.cs" />
     <Compile Include="KarmaHalo.cs" />
     <Compile Include="GhostHalo.cs" />
+    <Compile Include="MoonSigil.cs" />
     <Compile Include="NoneHalo.cs" />
     <Compile Include="OracleHalo.cs" />
     <Compile Include="HaloManager.cs" />

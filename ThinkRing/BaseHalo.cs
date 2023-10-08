@@ -11,6 +11,7 @@ namespace ThinkRing
         public Vector2? connectionPos = null; //if not null, connections will fire
         public Color color = Color.white;
         public Color prevColor;
+        public MoonSigil moonSigil;
 
         public Vector2 pos, lastPos;
         public float radius;
@@ -39,6 +40,19 @@ namespace ThinkRing
             if (HaloManager.colorType == Options.ColorTypes.RGB)
                 color = Color.red; //start color
             prevColor = color;
+
+            moonSigil = new MoonSigil();
+        }
+
+
+        public override void Destroy()
+        {
+            if (moonSigil != null) {
+                moonSigil.Destroy();
+                room?.RemoveObject(moonSigil);
+                moonSigil.RemoveFromRoom();
+            }
+            base.Destroy();
         }
 
 
@@ -95,6 +109,14 @@ namespace ThinkRing
                 fireBolt = false;
             }
             connectionPos = null; //reset connectionPos
+
+            //update moonsigil
+            if (moonSigil != null) {
+                if (moonSigil.room != room)
+                    room.AddObject(moonSigil);
+                moonSigil.pos = pos;
+                moonSigil.lastPos = lastPos;
+            }
         }
 
 
