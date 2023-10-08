@@ -115,8 +115,8 @@ namespace ThinkRing
             if (moonSigil != null) {
                 if (moonSigil.room != room)
                     room.AddObject(moonSigil);
-                moonSigil.pos = pos;
-                moonSigil.lastPos = lastPos;
+                moonSigil.pos = owner?.pos ?? pos;
+                moonSigil.lastPos = owner?.lastPos ?? lastPos;
                 if (!(this is NoneHalo))
                     moonSigil.alpha = Mathf.Clamp(radius / 20f, 0f, 1f);
             }
