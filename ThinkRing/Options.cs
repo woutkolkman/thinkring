@@ -11,7 +11,8 @@ namespace ThinkRing
         public static Configurable<string> containerType, shaderType;
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
-        public static Configurable<bool> haloOffset, ghostHaloTentacles, saintPop, moonSigil;
+        public static Configurable<bool> haloOffset, ghostHaloTentacles, ghostHaloGlow;
+        public static Configurable<bool> saintPop, moonSigil;
         public static Configurable<float> rgbCycleSpeed;
         public static Configurable<int> maxRings;
         public int curTab;
@@ -79,6 +80,7 @@ namespace ThinkRing
             boltsHitYourself = config.Bind("boltsHitYourself", defaultValue: false, new ConfigurableInfo("When dragging yourself through the air, bolts will hit yourself instead of random points around the halo.", null, "", "Bolts hit yourself"));
             haloOffset = config.Bind("haloOffset", defaultValue: false, new ConfigurableInfo("Halo will be above slugcats head.", null, "", "Halo offset"));
             ghostHaloTentacles = config.Bind("ghostHaloTentacles", defaultValue: false, new ConfigurableInfo("Ghost halo has tentacles or rags, like an echo. They are a bit weird on the ground, because they like to avoid it.", null, "", "Ghost halo tentacles"));
+            ghostHaloGlow = config.Bind(nameof(ghostHaloGlow), defaultValue: false, new ConfigurableInfo("Ghost halo adds GoldenGlow shader, like an echo.", null, "", "Ghost halo glow"));
             saintPop = config.Bind(nameof(saintPop), defaultValue: true, new ConfigurableInfo("When using kill/revive tools, special effects are used similar to Saint's ability.", null, "", "Saint pop"));
             moonSigil = config.Bind(nameof(moonSigil), defaultValue: false, new ConfigurableInfo("Adds that one sprite that's behind Spearmaster's Moon puppet.", null, "", "Moon sigil"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
@@ -103,7 +105,9 @@ namespace ThinkRing
             float l = 140f, r = 340f;
             AddComboBox(activateType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ActivateTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddCheckbox(sound, new Vector2(r, y));
+            AddCheckbox(boltsHitYourself, new Vector2(r + 100f, y));
             AddCheckbox(blink, new Vector2(r, y -= 40f));
+            AddCheckbox(haloOffset, new Vector2(r + 100f, y));
             AddDivider(y -= 10f);
 
             AddComboBox(colorType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 150f);
@@ -117,9 +121,8 @@ namespace ThinkRing
             AddComboBox(lightningType, new Vector2(l, y - 80f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddComboBox(haloType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddTextBox(maxRings, new Vector2(r, y));
-            AddCheckbox(boltsHitYourself, new Vector2(r, y -= 40f));
-            AddCheckbox(haloOffset, new Vector2(r, y -= 40f));
             AddCheckbox(ghostHaloTentacles, new Vector2(r, y -= 40f));
+            AddCheckbox(ghostHaloGlow, new Vector2(r, y -= 40f));
             AddCheckbox(saintPop, new Vector2(r, y -= 40f));
             AddCheckbox(moonSigil, new Vector2(r, y -= 40f));
         }

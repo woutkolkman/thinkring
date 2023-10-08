@@ -13,7 +13,7 @@ namespace ThinkRing
         public GhostHalo(BodyPart owner) : base(owner)
         {
             maxRadius = Options.maxRings.Value * 50f - 50f;
-            totalSprites = 1;
+            totalSprites = 2;
         }
 
 
@@ -83,9 +83,11 @@ namespace ThinkRing
 
         public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
         {
-            sLeaser.sprites = new FSprite[1];
+            sLeaser.sprites = new FSprite[totalSprites];
             sLeaser.sprites[0] = new FSprite("Futile_White", true);
             sLeaser.sprites[0].shader = rCam.game.rainWorld.Shaders["GhostDistortion"];
+            sLeaser.sprites[1] = new FSprite("Futile_White", true);
+            sLeaser.sprites[1].shader = rCam.game.rainWorld.Shaders["GoldenGlow"];
             this.AddToContainer(sLeaser, rCam, null);
         }
 
@@ -94,16 +96,21 @@ namespace ThinkRing
         {
             sLeaser.sprites[0].color = color;
             sLeaser.sprites[0].isVisible = !slatedForDeletetion;
-            sLeaser.sprites[0].scale = Mathf.Lerp(prevRadius, radius, timeStacker) / 8f;
+            sLeaser.sprites[1].isVisible = !slatedForDeletetion && Options.ghostHaloGlow.Value;
+            sLeaser.sprites[1].alpha = 0.92f;
             Vector2 vector = Vector2.Lerp(lastPos, pos, timeStacker);
-            sLeaser.sprites[0].x = vector.x - camPos.x;
-            sLeaser.sprites[0].y = vector.y - camPos.y;
+            for (int i = 0; i < totalSprites; i++) {
+                sLeaser.sprites[i].scale = Mathf.Lerp(prevRadius, radius, timeStacker) / 8f;
+                sLeaser.sprites[i].x = vector.x - camPos.x;
+                sLeaser.sprites[i].y = vector.y - camPos.y;
+            }
         }
 
 
         public override void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
         {
             rCam.ReturnFContainer("Bloom").AddChild(sLeaser.sprites[0]);
+            rCam.ReturnFContainer("Bloom").AddChild(sLeaser.sprites[1]);
         }
     }
 }
