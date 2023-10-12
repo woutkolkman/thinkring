@@ -120,7 +120,7 @@ namespace ThinkRing
         public static void MouseDragHealth_KillCreature_RuntimeDetour(Action<RainWorldGame, PhysicalObject> orig, RainWorldGame game, PhysicalObject obj)
         {
             bool shouldPop = obj is PhysicalObject;
-            bool isAlive = (obj as Creature)?.State?.alive ?? false;
+            bool? isAlive = (obj as Creature)?.State?.alive ?? (obj as Oracle)?.Consious;
             orig(game, obj);
             if (Options.saintPop.Value != true)
                 return;
@@ -129,7 +129,7 @@ namespace ThinkRing
                 return;
             UnityEngine.Vector2 pos = (obj as Creature)?.mainBodyChunk.pos ?? obj.firstChunk.pos;
 
-            if (isAlive) {
+            if (isAlive == true) {
                 obj.room.PlaySound(SoundID.Firecracker_Bang, pos, 1f, 0.75f + UnityEngine.Random.value);
                 obj.room.PlaySound(SoundID.SS_AI_Give_The_Mark_Boom, pos, 1f, 0.5f + UnityEngine.Random.value * 0.5f);
             } else {
@@ -145,7 +145,7 @@ namespace ThinkRing
         public static void MouseDragHealth_ReviveCreature_RuntimeDetour(Action<PhysicalObject> orig, PhysicalObject obj)
         {
             bool shouldPop = obj is PhysicalObject;
-            bool isAlive = (obj as Creature)?.State?.alive ?? false;
+            bool? isAlive = (obj as Creature)?.State?.alive ?? (obj as Oracle)?.Consious;
             orig(obj);
             if (Options.saintPop.Value != true)
                 return;
@@ -154,7 +154,7 @@ namespace ThinkRing
                 return;
             UnityEngine.Vector2 pos = (obj as Creature)?.mainBodyChunk.pos ?? obj.firstChunk.pos;
 
-            if (!isAlive && obj is Creature) {
+            if (isAlive == false) {
                 obj.room.PlaySound(SoundID.SS_AI_Give_The_Mark_Boom, pos, 1f, 1f);
                 obj.room.AddObject(new ShockWave(pos, 100f, 0.07f, 6, false));
                 for (int i = 0; i < 10; i++)
