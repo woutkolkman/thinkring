@@ -54,8 +54,12 @@
                     halo.shortestDistFromHalo = MouseDrag.Drag.dragChunk?.owner == creature;
                 }
 
-                if (halo.slatedForDeletetion || halo.room != creature?.room)
+                if (halo.slatedForDeletetion || halo.room?.game?.processActive != true || 
+                    (halo.room != creature?.room && creature?.room != null)) {
+                    halo.room?.RemoveObject(halo);
+                    halo.RemoveFromRoom();
                     halo = null;
+                }
             }
         }
     }
