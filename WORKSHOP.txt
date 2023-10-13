@@ -1,4 +1,4 @@
-Adds multiple halos inspired by the Psychic from Rusty Machine (1.5 mod). Dragging things with your mouse will make lightning apprear. You can throw bombs and spears, throw creatures, or drag yourself through the air. The halo should work with any scug. The lightning bolts are cosmetic only and cause no damage.
+Adds multiple halos inspired by the Psychic from Rusty Machine (1.5 mod). Dragging things with your mouse will make lightning apprear. You can throw bombs and spears, throw creatures, or drag yourself through the air. The halo should work with any scug. The lightning bolts are cosmetic only and cause no damage. Currently only the first player gets a halo.
 
 Credits:
 - gruntonium - Art, Idea & Playtesting
@@ -6,7 +6,6 @@ Credits:
 
 Source code is here: https://github.com/woutkolkman/thinkring
 
-This mod does not fully support Jolly Co-op yet, you can't select which player gets a halo.
 When the mod is loaded for the first time, the "Velocity drag" option is automatically set.
 Creatures do not have fall damage, so damaging them currently only works by throwing spears.
 You also need to install Mouse Drag to enable this mod.

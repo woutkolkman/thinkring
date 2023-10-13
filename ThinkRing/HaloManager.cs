@@ -11,7 +11,7 @@
 
         public static void Update(RainWorldGame game)
         {
-            Creature creature = game?.FirstAlivePlayer?.realizedCreature;
+            Creature creature = game?.Players?.Count > 0 ? game.Players[0]?.realizedCreature : null;
 
             if (halo == null) {
                 if (!(creature is Player) || creature.room == null || 
