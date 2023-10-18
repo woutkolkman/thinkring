@@ -119,11 +119,11 @@ namespace ThinkRing
             flashAmount = Mathf.Clamp(flashAmount, 0f, 1f); //keep flashAmount a value from 0f to 1f
 
             this.lastPos = this.pos;
-            Vector2 vector = (owner.owner.owner as Creature).mainBodyChunk.pos;
+            Vector2 vector = overridePos ?? (owner.owner.owner as Creature).mainBodyChunk.pos;
             if (Options.haloOffset.Value) {
                 Vector2 headDir = new Vector2(0f, -1f);
                 //Vector2 headDir = Custom.DirVec(owner.pos, (owner.owner.owner as Creature).mainBodyChunk.pos);
-                vector = (owner.owner.owner as Creature).mainBodyChunk.pos - headDir * Mathf.Lerp(distAboveHead, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
+                vector -= headDir * Mathf.Lerp(distAboveHead, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
                 //Vector2 vector = this.owner.guard.mainBodyChunk.pos - this.owner.guard.StoneDir * Mathf.Lerp(200f, this.RadAtCircle(2f + this.slowRingsActive * 2f, 1f, 0f), 0.5f);
             }
             this.pos += Vector2.ClampMagnitude(vector - this.pos, 10f);
@@ -349,7 +349,7 @@ namespace ThinkRing
 
         public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
         {
-            Vector2 headPos = owner.pos; //replaced parameter with fixed value
+            Vector2 headPos = overridePos ?? owner.pos; //replaced parameter with fixed variable
             Vector2 headDir = new Vector2(); //replaced parameter with fixed value
             if (Options.haloOffset.Value && (owner.owner?.owner as Creature)?.mainBodyChunk != null)
                 headDir = new Vector2(0f, -1f);

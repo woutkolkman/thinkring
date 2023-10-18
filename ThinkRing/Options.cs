@@ -12,7 +12,7 @@ namespace ThinkRing
         public static Configurable<Color> staticHaloColor;
         public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
         public static Configurable<bool> haloOffset, ghostHaloTentacles, ghostHaloGlow;
-        public static Configurable<bool> saintPop, moonSigil;
+        public static Configurable<bool> saintPop, moonSigil, followMouse;
         public static Configurable<float> rgbCycleSpeed;
         public static Configurable<int> maxRings;
         public int curTab;
@@ -83,6 +83,7 @@ namespace ThinkRing
             ghostHaloGlow = config.Bind(nameof(ghostHaloGlow), defaultValue: false, new ConfigurableInfo("Ghost halo adds GoldenGlow shader, like an echo.", null, "", "Ghost halo glow"));
             saintPop = config.Bind(nameof(saintPop), defaultValue: true, new ConfigurableInfo("When using kill/revive tools, special effects are used similar to Saint's ability.", null, "", "Saint pop"));
             moonSigil = config.Bind(nameof(moonSigil), defaultValue: false, new ConfigurableInfo("Adds that one sprite that's behind Spearmaster's Moon puppet.", null, "", "Moon sigil"));
+            followMouse = config.Bind(nameof(followMouse), defaultValue: false, new ConfigurableInfo("Halo follows mouse instead of player.", null, "", "Follow mouse"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
             maxRings = config.Bind("maxRings", defaultValue: 2, new ConfigurableInfo("Max amount of rings in halo [2..4].", new ConfigAcceptableRange<int>(2, 4), "", "Max rings"));
         }
@@ -124,6 +125,7 @@ namespace ThinkRing
             AddCheckbox(ghostHaloTentacles, new Vector2(r, y -= 40f));
             AddCheckbox(ghostHaloGlow, new Vector2(r, y -= 40f));
             AddCheckbox(saintPop, new Vector2(r, y -= 40f));
+            AddCheckbox(followMouse, new Vector2(r + 120f, y));
             AddCheckbox(moonSigil, new Vector2(r, y -= 40f));
         }
 

@@ -49,6 +49,8 @@
                     (creature as Player)?.Blink(30);
 
                 halo.connectionPos = MouseDrag.Drag.dragChunk?.pos;
+                if (Options.followMouse.Value)
+                    halo.overridePos = (UnityEngine.Vector2)Futile.mousePosition + game.cameras[0]?.pos ?? new UnityEngine.Vector2();
                 if (!Options.boltsHitYourself.Value) {
                     halo.randomBoltPositions = MouseDrag.Drag.dragChunk?.owner == creature;
                     halo.shortestDistFromHalo = MouseDrag.Drag.dragChunk?.owner == creature;

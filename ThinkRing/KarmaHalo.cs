@@ -44,7 +44,7 @@ namespace ThinkRing
             radius = Mathf.Clamp(radius, 0f, maxRadius);
 
             this.lastPos = this.pos;
-            pos = owner.pos + new Vector2(0f, Options.haloOffset.Value ? 100f : 0f);
+            pos = (overridePos ?? owner.pos) + new Vector2(0f, Options.haloOffset.Value ? 100f : 0f);
             base.Update(eu); //lightning bolts and color cycle
         }
 

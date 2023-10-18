@@ -9,6 +9,7 @@ namespace ThinkRing
         public int firstSprite = 0;
         public int totalSprites;
         public Vector2? connectionPos = null; //if not null, connections will fire
+        public Vector2? overridePos = null; //if not null, halo position is different
         public Color color = Color.white;
         public Color prevColor;
         public MoonSigil moonSigil;
@@ -78,11 +79,10 @@ namespace ThinkRing
             {
                 if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) && connectionPos.HasValue)
                 {
-                    Vector2 center = pos;
                     Vector2 target = connectionPos.Value + Random.insideUnitCircle * 5f;
                     if (randomBoltPositions)
-                        target = center + Custom.RNV() * 300f * Random.Range(0.5f, 1f);
-                    Vector2 start = center + (shortestDistFromHalo ? Custom.DirVec(center, target) : Custom.DegToVec(Random.value * 360f)) * radius;
+                        target = pos + Custom.RNV() * 300f * Random.Range(0.5f, 1f);
+                    Vector2 start = pos + (shortestDistFromHalo ? Custom.DirVec(pos, target) : Custom.DegToVec(Random.value * 360f)) * radius;
 
                     if (HaloManager.lightningType == Options.LightningTypes.RustyMachine)
                     {
@@ -115,8 +115,8 @@ namespace ThinkRing
             if (moonSigil != null) {
                 if (moonSigil.room != room)
                     room.AddObject(moonSigil);
-                moonSigil.pos = owner?.pos ?? pos;
-                moonSigil.lastPos = owner?.lastPos ?? lastPos;
+                moonSigil.lastPos = moonSigil.pos;
+                moonSigil.pos = overridePos ?? pos;
                 if (!(this is NoneHalo))
                     moonSigil.alpha = Mathf.Clamp(radius / 20f, 0f, 1f);
             }

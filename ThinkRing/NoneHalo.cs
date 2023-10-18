@@ -1,4 +1,6 @@
-﻿namespace ThinkRing
+﻿using UnityEngine;
+
+namespace ThinkRing
 {
     public class NoneHalo : BaseHalo
     {
@@ -22,7 +24,7 @@
             }
 
             this.lastPos = this.pos;
-            pos = owner.pos;
+            pos = (overridePos ?? owner.pos) + new Vector2(0f, Options.haloOffset.Value ? 100f : 0f);
             radius = 0f;
             base.Update(eu); //lightning bolts and color cycle
         }
