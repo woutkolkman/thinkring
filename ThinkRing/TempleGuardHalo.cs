@@ -140,8 +140,7 @@ namespace ThinkRing
 
             base.Update(eu); //lightning bolts and color cycle
 
-            if ((owner.owner.owner as Creature).dead)
-                this.deactivated = true;
+            this.deactivated = (owner.owner.owner as Creature).dead;
 
             if (this.activity > stress) {
                 this.activity = Mathf.Max(stress - 0.0033333334f, stress);

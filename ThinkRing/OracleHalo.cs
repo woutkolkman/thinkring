@@ -80,10 +80,9 @@ namespace ThinkRing
                 if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) 
                     && visibility && connectionPos.HasValue)
                 {
-                    Vector2 center = this.Center(0f);
                     Vector2 target = connectionPos.Value + Random.insideUnitCircle * 5f;
                     if (randomBoltPositions)
-                        target = center + Custom.RNV() * 300f * Random.Range(0.5f, 1f);
+                        target = this.Center(0f) + Custom.RNV() * 300f * Random.Range(0.5f, 1f);
 
                     if (HaloManager.lightningType == Options.LightningTypes.Oracle) {
                         //start position is calculated when drawing lightning
@@ -96,7 +95,7 @@ namespace ThinkRing
                 fireBolt = false;
             }
 
-            this.lastPos = this.pos;
+            lastPos = pos;
             pos = Center(1f); //"pos" is unused for OracleHalo
             radius = Radius(2f, 0f) * size; //"radius" is unused for OracleHalo
             base.Update(eu); //alternative lightning bolts and color cycle
@@ -177,7 +176,10 @@ namespace ThinkRing
         public Vector2 Center(float timeStacker)
         {
             //edited to return exact head position instead of slightly above head
-            return Vector2.Lerp(this.owner.lastPos, this.owner.pos, timeStacker) + new Vector2(0f, Options.haloOffset.Value ? 80f : 0f);
+            Vector2 heightDiff = new Vector2(0f, Options.haloOffset.Value ? 80f : 0f);
+            if (overridePos != null)
+                return Vector2.Lerp(lastPos - heightDiff, (Vector2)overridePos, timeStacker) + heightDiff;
+            return Vector2.Lerp(this.owner.lastPos, this.owner.pos, timeStacker) + heightDiff;
         }
 
 

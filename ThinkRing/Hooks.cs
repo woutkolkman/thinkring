@@ -19,9 +19,6 @@ namespace ThinkRing
             //at tickrate
             On.RainWorldGame.Update += RainWorldGameUpdateHook;
 
-            //at framerate
-            On.RainWorldGame.RawUpdate += RainWorldGameRawUpdateHook;
-
             //at new game
             On.RainWorldGame.ctor += RainWorldGameCtorHook;
 
@@ -79,15 +76,8 @@ namespace ThinkRing
         //at tickrate
         static void RainWorldGameUpdateHook(On.RainWorldGame.orig_Update orig, RainWorldGame self)
         {
-            orig(self);
             HaloManager.Update(self);
-        }
-
-
-        //at framerate
-        static void RainWorldGameRawUpdateHook(On.RainWorldGame.orig_RawUpdate orig, RainWorldGame self, float dt)
-        {
-            orig(self, dt);
+            orig(self);
         }
 
 
