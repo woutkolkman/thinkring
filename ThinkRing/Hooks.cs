@@ -19,6 +19,9 @@ namespace ThinkRing
             //at tickrate
             On.RainWorldGame.Update += RainWorldGameUpdateHook;
 
+            //at framerate
+            On.RainWorldGame.RawUpdate += RainWorldGameRawUpdateHook;
+
             //at new game
             On.RainWorldGame.ctor += RainWorldGameCtorHook;
 
@@ -81,6 +84,15 @@ namespace ThinkRing
         }
 
 
+        //at framerate
+        static void RainWorldGameRawUpdateHook(On.RainWorldGame.orig_RawUpdate orig, RainWorldGame self, float dt)
+        {
+            orig(self, dt);
+            if (UnityEngine.Input.GetKeyDown(Options.activateKey.Value))
+                HaloManager.keyBindState = !HaloManager.keyBindState;
+        }
+
+
         //at new game
         static void RainWorldGameCtorHook(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
         {
@@ -112,7 +124,7 @@ namespace ThinkRing
             bool shouldPop = obj is PhysicalObject;
             bool? isAlive = (obj as Creature)?.State?.alive ?? (obj as Oracle)?.Consious;
             orig(game, obj);
-            if (Options.saintPop.Value != true)
+            if (Options.saintPop.Value != true || !HaloManager.cosmeticIsActive)
                 return;
 
             if (!shouldPop || obj?.room == null)
@@ -137,7 +149,7 @@ namespace ThinkRing
             bool shouldPop = obj is PhysicalObject;
             bool? isAlive = (obj as Creature)?.State?.alive ?? (obj as Oracle)?.Consious;
             orig(obj);
-            if (Options.saintPop.Value != true)
+            if (Options.saintPop.Value != true || !HaloManager.cosmeticIsActive)
                 return;
 
             if (!shouldPop || obj?.room == null)

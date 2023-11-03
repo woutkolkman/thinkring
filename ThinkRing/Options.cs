@@ -15,6 +15,7 @@ namespace ThinkRing
         public static Configurable<bool> saintPop, moonSigil, followMouse;
         public static Configurable<float> rgbCycleSpeed;
         public static Configurable<int> maxRings;
+        public static Configurable<KeyCode> activateKey;
         public int curTab;
 
         public enum ActivateTypes
@@ -86,6 +87,7 @@ namespace ThinkRing
             followMouse = config.Bind(nameof(followMouse), defaultValue: false, new ConfigurableInfo("Halo follows mouse instead of player.", null, "", "Follow mouse"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
             maxRings = config.Bind("maxRings", defaultValue: 2, new ConfigurableInfo("Max amount of rings in halo [2..4].", new ConfigAcceptableRange<int>(2, 4), "", "Max rings"));
+            activateKey = config.Bind(nameof(activateKey), KeyCode.None, new ConfigurableInfo("KeyBind to activate this mod. If not configured, it's always active.", null, "", "Activate"));
         }
 
 
@@ -109,6 +111,7 @@ namespace ThinkRing
             AddCheckbox(boltsHitYourself, new Vector2(r + 100f, y));
             AddCheckbox(blink, new Vector2(r, y -= 40f));
             AddCheckbox(haloOffset, new Vector2(r + 100f, y));
+            AddKeyBinder(activateKey, new Vector2(r, y -= 45f));
             AddDivider(y -= 10f);
 
             AddComboBox(colorType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(ColorTypes)), alH: FLabelAlignment.Left, width: 150f);
@@ -124,9 +127,9 @@ namespace ThinkRing
             AddTextBox(maxRings, new Vector2(r, y));
             AddCheckbox(ghostHaloTentacles, new Vector2(r, y -= 40f));
             AddCheckbox(ghostHaloGlow, new Vector2(r, y -= 40f));
+            AddCheckbox(moonSigil, new Vector2(r + 150f, y));
             AddCheckbox(saintPop, new Vector2(r, y -= 40f));
             AddCheckbox(followMouse, new Vector2(r + 120f, y));
-            AddCheckbox(moonSigil, new Vector2(r, y -= 40f));
         }
 
 

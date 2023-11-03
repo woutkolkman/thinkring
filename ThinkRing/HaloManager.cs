@@ -7,6 +7,8 @@
         public static Options.ColorTypes colorType = Options.ColorTypes.CharacterDarker;
         public static Options.LightningTypes lightningType = Options.LightningTypes.RustyMachine;
         public static Options.HaloTypes haloType = Options.HaloTypes.Oracle;
+        public static bool keyBindState = false;
+        public static bool cosmeticIsActive => Options.activateKey.Value == UnityEngine.KeyCode.None || keyBindState;
 
 
         public static void Update(RainWorldGame game)
@@ -24,6 +26,10 @@
 
                 //don't create new halo if mousedrag is not active
                 if (activeType == Options.ActivateTypes.ToolsActive && !MouseDrag.State.activated)
+                    return;
+
+                //don't create new halo if keybind disabled it
+                if (!cosmeticIsActive)
                     return;
 
                 var head = ((creature as Player).graphicsModule as PlayerGraphics)?.head;

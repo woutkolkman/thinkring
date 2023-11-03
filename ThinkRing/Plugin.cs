@@ -8,7 +8,7 @@ using System.Security.Permissions;
 namespace ThinkRing
 {
     //also edit version in "modinfo.json"
-    [BepInPlugin("maxi-mol-gruntonium.thinkring", "Think Ring", "0.1.4")] //(GUID, mod name, mod version)
+    [BepInPlugin("maxi-mol-gruntonium.thinkring", "Think Ring", "0.1.5")] //(GUID, mod name, mod version)
     public class Plugin : BaseUnityPlugin
     {
         public static new ManualLogSource Logger { get; private set; } = null;
