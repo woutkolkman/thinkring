@@ -13,6 +13,7 @@ namespace ThinkRing
         public static Configurable<bool> whiteLightning, sound, blink, boltsHitYourself;
         public static Configurable<bool> haloOffset, ghostHaloTentacles, ghostHaloGlow;
         public static Configurable<bool> saintPop, moonSigil, followMouse;
+        public static Configurable<bool> oracleConstRad;
         public static Configurable<float> rgbCycleSpeed;
         public static Configurable<int> maxRings;
         public static Configurable<KeyCode> activateKey;
@@ -85,6 +86,7 @@ namespace ThinkRing
             saintPop = config.Bind(nameof(saintPop), defaultValue: true, new ConfigurableInfo("When using kill/revive tools, special effects are used similar to Saint's ability.", null, "", "Saint pop"));
             moonSigil = config.Bind(nameof(moonSigil), defaultValue: false, new ConfigurableInfo("Adds that one sprite that's behind Spearmaster's Moon puppet.", null, "", "Moon sigil"));
             followMouse = config.Bind(nameof(followMouse), defaultValue: false, new ConfigurableInfo("Halo follows mouse instead of player.", null, "", "Follow mouse"));
+            oracleConstRad = config.Bind(nameof(oracleConstRad), defaultValue: false, new ConfigurableInfo("Oracle halo will have a more constant outer radius defined by \"Max rings\".", null, "", "Oracle radius"));
             rgbCycleSpeed = config.Bind("rgbCycleSpeed", defaultValue: 200f, new ConfigurableInfo("Speed of halo changing colors when \"" + ColorTypes.RGB.ToString() + "\" is selected. 2500 is one full cycle per second --> (value / 100000 * 40 ticks = cycles/s).", null, "", "RGB cycle speed"));
             maxRings = config.Bind("maxRings", defaultValue: 2, new ConfigurableInfo("Max amount of rings in halo [2..4].", new ConfigAcceptableRange<int>(2, 4), "", "Max rings"));
             activateKey = config.Bind(nameof(activateKey), KeyCode.None, new ConfigurableInfo("KeyBind to activate this mod. If not configured, it's always active.", null, "", "Activate"));
@@ -125,6 +127,7 @@ namespace ThinkRing
             AddComboBox(lightningType, new Vector2(l, y - 80f), Enum.GetNames(typeof(LightningTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddComboBox(haloType, new Vector2(l, y -= 40f), Enum.GetNames(typeof(HaloTypes)), alH: FLabelAlignment.Left, width: 150f);
             AddTextBox(maxRings, new Vector2(r, y));
+            AddCheckbox(oracleConstRad, new Vector2(r + 130f, y));
             AddCheckbox(ghostHaloTentacles, new Vector2(r, y -= 40f));
             AddCheckbox(ghostHaloGlow, new Vector2(r, y -= 40f));
             AddCheckbox(moonSigil, new Vector2(r + 150f, y));

@@ -12,13 +12,13 @@ namespace ThinkRing
         public float[,] ringRotations;
         public float expand;
         public float lastExpand;
-        public float getToExpand;
+        public float getToExpand; //controls outer radius
         public float push;
         public float lastPush;
-        public float getToPush;
+        public float getToPush; //controls inner circle radius
         public float white;
         public float lastWhite;
-        public float getToWhite;
+        public float getToWhite; //controls inner circle filled
 
         //added to original
         public bool visibility = true;
@@ -151,6 +151,10 @@ namespace ThinkRing
                 this.getToExpand = ((UnityEngine.Random.value < 0.5f && !flag) ? 1f : Mathf.Lerp(0.8f, 2f, Mathf.Pow(UnityEngine.Random.value, 1.5f)));
             if (UnityEngine.Random.value < 0.00625f || flag)
                 this.getToPush = ((UnityEngine.Random.value < 0.5f && !flag) ? 0f : ((float)(-1 + UnityEngine.Random.Range(0, UnityEngine.Random.Range(1, 6)))));
+
+            //added to force radius
+            if (Options.oracleConstRad.Value)
+                this.getToExpand = Options.maxRings.Value - 1;
         }
 
 
