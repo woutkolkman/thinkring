@@ -36,6 +36,7 @@ namespace ThinkRing
         public float flashAmount = 1f; //start value when created
         public float haloLerpSpeed = 1f; //changed from 0.1f
         public float distAboveHead = 110f; //changed from 200f
+        public Vector2? swapperPos = null;
 
 
         public TempleGuardHalo(BodyPart owner) : base(owner)
@@ -134,6 +135,8 @@ namespace ThinkRing
                 this.firstUpdate = false;
             }
             radius = RadAtCircle(ringsActive, 0f, 0f); //"radius" is unused for TempleGuardHalo
+
+            swapperPos = connectionPos; //swapperPos isn't reset after Update(), quick fix for LightningType TempleGuard
 
             for (int j = 0; j < this.swappers.Length; j++) //moved before base.Update so swappers can read connectionPos
                 this.swappers[j].Update();
@@ -448,8 +451,8 @@ namespace ThinkRing
         public Vector2 GlyphPos(int circle, int glyph, float timeStacker)
         {
             //added to hide a connection position for a cursor behind the grabbed object
-            if (HaloManager.lightningType == Options.LightningTypes.TempleGuard && circle == 0 && glyph == 0 && connectionPos != null)
-                return connectionPos.Value - this.pos;
+            if (HaloManager.lightningType == Options.LightningTypes.TempleGuard && circle == 0 && glyph == 0 && swapperPos != null)
+                return swapperPos.Value - this.pos;
 
             if ((float)circle * 2f - Mathf.Lerp(this.glyphPositions[circle][glyph, 1], this.glyphPositions[circle][glyph, 0], timeStacker) < 0f)
                 return new Vector2(0f, 0f);
@@ -607,7 +610,7 @@ namespace ThinkRing
                     IntVector2 intVector = new IntVector2(0, 0);
 
                     //added force first glyph
-                    if (HaloManager.lightningType == Options.LightningTypes.TempleGuard && owner.halo.connectionPos != null && num == 0)
+                    if (HaloManager.lightningType == Options.LightningTypes.TempleGuard && owner.halo.swapperPos != null && num == 0)
                         return intVector;
 
                     intVector.x = UnityEngine.Random.Range(0, this.owner.halo.ringsActive);
