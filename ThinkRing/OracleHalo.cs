@@ -76,13 +76,13 @@ namespace ThinkRing
             for (int i = 0; i < this.connections.Length; i++)
             {
                 this.connections[i].lastLightUp = this.connections[i].lightUp;
-                this.connections[i].lightUp *= 0.7f;
+                this.connections[i].lightUp *= HaloManager.colorType == Options.ColorTypes.Black ? 0.9f : 0.7f;
                 if ((UnityEngine.Random.value < connectionsFireChance / 40f || fireBolt) 
                     && visibility && connectionPos.HasValue)
                 {
                     Vector2 target = connectionPos.Value + Random.insideUnitCircle * 5f;
                     if (randomBoltPositions)
-                        target = this.Center(0f) + Custom.RNV() * 300f * Random.Range(0.5f, 1f);
+                        target = this.Center(0f) + Custom.RNV() * 350f * Random.Range(0.5f, 1f);
 
                     if (HaloManager.lightningType == Options.LightningTypes.Oracle) {
                         //start position is calculated when drawing lightning
@@ -181,6 +181,8 @@ namespace ThinkRing
         {
             //edited to return exact head position instead of slightly above head
             Vector2 heightDiff = new Vector2(0f, Options.haloOffset.Value ? 80f : 0f);
+            if (HaloManager.colorType == Options.ColorTypes.Black)
+                heightDiff += new Vector2(-7.5f, 15.5f); //adjust to background
             if (overridePos != null)
                 return Vector2.Lerp(lastPos - heightDiff, (Vector2)overridePos, timeStacker) + heightDiff;
             return Vector2.Lerp(this.owner.lastPos, this.owner.pos, timeStacker) + heightDiff;
