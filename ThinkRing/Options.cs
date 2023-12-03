@@ -31,7 +31,8 @@ namespace ThinkRing
             Static,
             CharacterDarker,
             Character,
-            RGB
+            RGB,
+            Black
         }
 
         public enum LightningTypes

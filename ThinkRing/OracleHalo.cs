@@ -204,7 +204,7 @@ namespace ThinkRing
             for (int k = 0; k < 100; k++)
             {
                 sLeaser.sprites[this.firstBitSprite + k] = new FSprite("pixel", true);
-                sLeaser.sprites[this.firstBitSprite + k].scaleX = 2f; //smaller width of bits, so they are visibly separated
+                sLeaser.sprites[this.firstBitSprite + k].scaleX = HaloManager.colorType == Options.ColorTypes.Black ? 4f : 2f; //smaller width of bits, so they are visibly separated
                 sLeaser.sprites[this.firstBitSprite + k].color = color;
             }
             this.AddToContainer(sLeaser, rCam, null); //added

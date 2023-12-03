@@ -40,6 +40,8 @@ namespace ThinkRing
                 color = PlayerGraphics.SlugcatColor((owner.owner as PlayerGraphics).CharacterForColor);
             if (HaloManager.colorType == Options.ColorTypes.RGB)
                 color = Color.red; //start color
+            if (HaloManager.colorType == Options.ColorTypes.Black)
+                color = new Color(0f, 0f, 0f); //manually setting black somehow wasn't black enough
             prevColor = color;
 
             if (Options.moonSigil.Value)
