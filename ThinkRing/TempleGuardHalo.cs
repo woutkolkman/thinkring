@@ -121,6 +121,8 @@ namespace ThinkRing
 
             this.lastPos = this.pos;
             Vector2 vector = overridePos ?? (owner.owner.owner as Creature).mainBodyChunk.pos;
+            if (HaloManager.colorType == Options.ColorTypes.Black)
+                vector += new Vector2(-7.5f, 15.5f); //adjust to background
             if (Options.haloOffset.Value) {
                 Vector2 headDir = new Vector2(0f, -1f);
                 //Vector2 headDir = Custom.DirVec(owner.pos, (owner.owner.owner as Creature).mainBodyChunk.pos);

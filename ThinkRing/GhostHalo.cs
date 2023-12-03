@@ -51,6 +51,8 @@ namespace ThinkRing
 
             this.lastPos = this.pos;
             pos = (overridePos ?? owner.pos) + new Vector2(0f, Options.haloOffset.Value ? 100f : 0f);
+            if (HaloManager.colorType == Options.ColorTypes.Black)
+                pos += new Vector2(-7.5f, 15.5f); //adjust to background
             base.Update(eu); //lightning bolts and color cycle
 
             //init tentacles
