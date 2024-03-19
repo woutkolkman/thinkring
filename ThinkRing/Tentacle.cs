@@ -211,7 +211,7 @@ namespace ThinkRing
                 this.segments[j, 1] = this.segments[j, 0];
                 this.segments[j, 0] += this.segments[j, 2];
                 this.segments[j, 2] *= 0.999f;
-                if (this.room.aimap != null && this.room.aimap.getAItile(this.segments[j, 0]).terrainProximity < 4)
+                if (this.room.aimap != null && this.room.aimap.getTerrainProximity(this.segments[j, 0]) < 4)
                 {
                     IntVector2 tilePosition = this.room.GetTilePosition(this.segments[j, 0]);
                     Vector2 a2 = new Vector2(0f, 0f);
@@ -221,11 +221,11 @@ namespace ThinkRing
                         {
                             float num2 = 0f;
                             for (int l = 0; l < 4; l++)
-                                num2 += (float)this.room.aimap.getAItile(tilePosition + Custom.fourDirections[k] + Custom.fourDirections[l]).terrainProximity;
+                                num2 += (float)this.room.aimap.getTerrainProximity(tilePosition + Custom.fourDirections[k] + Custom.fourDirections[l]);
                             a2 += Custom.fourDirections[k].ToVector2() * num2;
                         }
                     }
-                    this.segments[j, 2] += a2.normalized * Custom.LerpMap((float)this.room.aimap.getAItile(this.segments[j, 0]).terrainProximity, 0f, 3f, 2f, 0.2f);
+                    this.segments[j, 2] += a2.normalized * Custom.LerpMap((float)this.room.aimap.getTerrainProximity(this.segments[j, 0]), 0f, 3f, 2f, 0.2f);
                 }
                 this.segments[j, 2] += this.wind * 0.005f;
                 if (num > 0.5f && this.posB != null)
