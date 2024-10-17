@@ -7,5 +7,6 @@
   "requirements": ["maxi-mol.mousedrag"],
   "requirements_names": ["Mouse Drag"],
   "tags": ["Cosmetics"],
+  "update_url": "https://github.com/woutkolkman/thinkring",
   "checksum_override_version": false
 }
