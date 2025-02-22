@@ -1,0 +1,19 @@
+- Support multiple halos for multiple players, each having the same or custom halos?
+- Add overseer hologram (that appears in sandbox editing mode) as ring?
+- Semi-transparent halos
+- Enable/disable player glow with configurable colors
+- If config is reset, don't reset "hasRanBefore" variable
+- Echo rags match color of halo or slugcat
+- MSC lightning size configurable
+- Add (General Systems Bus/Guardian) gear/chain graphics to paused or stunned objects, check The Seeker mod pearls
+=== Forget list ===:
+- More Oracle halo customization of sprites and bits
+- Option to keep lightning active on certain objects
+- New (constant?) lightning based on hologram shader
+- Revive shockwave auto size with bigger creatures
+- Extract Oracle halo lighting from Oracle halo, and optionally apply this for all halos?
+- Guardian ring, maybe keep cursor on a paused or stunned object
+- Add a manually enable think ring every time option, so when game restarts, halo is disabled
+- Use CleanSpritesAndRemove for SpriteLeaser?
+- When dragging players, try to shoot lightning forwards, so it looks like the lightning is dragging the player
+- If main player is destroyed or killed, move halo to next player?
