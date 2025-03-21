@@ -1,3 +1,4 @@
+- Support updated mousedrag multi-select where every dragged bodychunk gets graphics applied?
 - Support multiple halos for multiple players, each having the same or custom halos?
 - Add overseer hologram (that appears in sandbox editing mode) as ring?
 - Semi-transparent halos
