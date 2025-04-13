@@ -1,5 +1,10 @@
+- Color presets for halo in remix menu, red green blue violet etc., also add multiple tabs for more room
+- Ability to change halo/lightning/multiple-settings for individual slugcats
+- Configurable halo/lightning/multiple-settings for multiple players. Support multiple halos for multiple players, each having the same or custom halos?
+- Add ghost lightning type? From new Watcher graphics
+- Add voidworm style glow halo, with lightning type the voidworm stab thing
+- Option to move the halo sprites behind the slugcat instead of being in front
 - Support updated mousedrag multi-select where every dragged bodychunk gets graphics applied?
-- Support multiple halos for multiple players, each having the same or custom halos?
 - Add overseer hologram (that appears in sandbox editing mode) as ring?
 - Semi-transparent halos
 - Enable/disable player glow with configurable colors
